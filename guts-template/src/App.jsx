@@ -2,29 +2,33 @@ import { useState } from 'react'
 import './App.css'
 import SplitText from "./SplitText";
 
-const handleAnimationComplete = () => {
-    console.log('All letters have animated!');
-};
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-        <SplitText
-            text="Hello World!"
-            className="text-2xl font-semibold text-center"
-            delay={100}
-            duration={0.6}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="center"
-            onLetterAnimationComplete={handleAnimationComplete}
-        />
+    <header style={{border: 'red 1px solid', width: 1000, backgroundColor: 'blue'}}>
+      <div style={{textAlign: 'left', display: 'flex'}}>
+        <h1>Welcome Lemar</h1>
+        <button style={{margin: 15}}>Quiz</button>
+        <button style={{margin: 15}}>+ Create Event</button>
+      </div>
+    </header>
+    <div style={{display: 'flex'}}>
+        <div style={{border: '1px solid red'}}>
+          <p>Event name</p>
+          <button>View event</button>
+        </div>
+        <div style={{border: '1px solid red'}}>
+          <p>Event name</p>
+          <button>View event</button>
+        </div>
+        <div style={{border: '1px solid red'}}>
+          <p>Event name</p>
+          <button>View event</button>
+        </div>
+      </div>
     </>
   )
 }
+
+export default App
