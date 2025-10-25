@@ -16,7 +16,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/home" element={<Home />} />
                 <Route path="/agenda" element={<Agenda />} />
                 <Route path="/groups" element={<Groups />} />
-                <Route path="/plan-event" element={<Plan />} />
+                <Route path="/plan" element={<Plan />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>

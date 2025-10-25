@@ -1,0 +1,144 @@
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* Center the entire page content */
+.plan-container {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* centers horizontally */
+    justify-content: center;   /* centers vertically */
+    min-height: 90vh;         /* take full screen height */
+    width: 80vh;               /* ensure full horizontal space */
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    padding: 20px;             /* prevent sticking to screen edges */
+}
+
+/* Limit the form width and add card-like styling */
+.plan-form {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form group spacing */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Participant input styling */
+.participant-input-container input {
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Participant bubbles */
+.participant-bubbles {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.bubble {
+    background-color: #e0e0e0;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+}
+
+.bubble:hover {
+    background-color: #d1d1d1;
+}
+
+/* Price buttons */
+.price-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.price-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    background-color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.price-btn.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Preferences */
+.preferences-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pref-btn {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    background-color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pref-btn.selected {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Submit button */
+.submit-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Back link styling */
+.back-link {
+    display: block;
+    margin-top: 25px;
+    text-align: center;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
