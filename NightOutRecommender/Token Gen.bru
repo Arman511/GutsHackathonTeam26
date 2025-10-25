@@ -1,18 +1,17 @@
 meta {
-  name: Register
+  name: Token Gen
   type: http
-  seq: 1
+  seq: 3
 }
 
 post {
-  url: http://localhost:8000/api/auth/register
-  body: json
+  url: http://localhost:8000/api/auth/token
+  body: formUrlEncoded
   auth: inherit
 }
 
 body:json {
   {
-    "name": "arman",
     "username": "arman",
     "password": "arman"
   }
