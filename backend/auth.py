@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
+import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy.util import deprecated
@@ -19,7 +19,7 @@ SECRET_KEY = "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
 ALGORITHM = "HS256"
 
 # We use bcrypt to securely hash user passwords:
-bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
@@ -39,7 +39,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     create_user_model = Users(
         name=create_user_request.name,
         username=create_user_request.username,
-        hashed_password=bcrypt_context.hash(create_user_request.password),
+        hashed_password=bcrypt.hashpw(create_user_request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
     )
     db.add(create_user_model)
     db.commit()
@@ -53,7 +53,7 @@ def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
         return False
-    if not bcrypt_context.verify(password, user.hashed_password):
+    if not bcrypt.checkpw(password.encode("utf-8"), user.hashed_password.encode("utf-8")):
         return False
     return user
 
