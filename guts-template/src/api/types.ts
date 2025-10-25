@@ -14,9 +14,10 @@ export type CreateEventRequest = {
 }
 export type LocationRankingRequest = { location_id: number; ranking: number }
 
-
 export type CreateLocationRequest = {
     location: string
+    open_time: string
+    close_time: string
     description: string
     address: string
     google_rating: number
@@ -26,6 +27,7 @@ export type CreateLocationRequest = {
     vegetarian: boolean
     drinks: boolean
     food: boolean
+    pet_friendly: boolean
     accessible: boolean
     formal_attire: boolean
     reservation_needed: boolean
@@ -35,6 +37,8 @@ export type CreateLocationRequest = {
 export type LocationSearchRequest = {
     keywords: string[]
     location?: string | null
+    open_time?: string | null
+    close_time?: string | null
     description?: string | null
     address?: string | null
     google_rating?: number | null
@@ -49,6 +53,7 @@ export type LocationSearchRequest = {
     reservation_needed?: boolean | null
     image_url?: string | null
 }
+
 export type LoginRequest = { username: string; password: string }
 export type LoginResponse = { access_token: string; token_type: string }
 export type RegisterRequest = { name: string; username: string; password: string }
