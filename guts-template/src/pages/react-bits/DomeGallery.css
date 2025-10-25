@@ -1,0 +1,66 @@
+.sphere-root {
+    width: 100vw;
+    height: 100vh;
+    perspective: 2000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.stage {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.sphere {
+    position: relative;
+    transform-style: preserve-3d;
+    transform-origin: center center;
+    animation: rotateSphere 120s linear infinite;
+}
+
+@keyframes rotateSphere {
+    from { transform: rotateX(10deg) rotateY(0deg); }
+    to   { transform: rotateX(10deg) rotateY(360deg); }
+}
+
+.item {
+    position: absolute;        /* crucial: keep absolute */
+    transform-style: preserve-3d;
+    left: 0;                   /* remove any 50% offsets */
+    top: 0;                    /* remove any 50% offsets */
+}
+
+.sphere-main {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.item__image {
+    width: 180px;   /* box width */
+    height: 180px;  /* same as width → square box */
+    margin: 8px;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.item__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* keep image aspect ratio, crop if needed */
+}
+
+
+.item__image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}

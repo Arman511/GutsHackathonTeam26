@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import os
 from typing import Annotated
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
@@ -14,10 +15,10 @@ from backend.dependencies import db_dependency
 from backend.models import CreateUserRequest, Token, Users
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
-SECRET_KEY = "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+)
 ALGORITHM = "HS256"
-
-# We use bcrypt to securely hash user passwords:
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
@@ -35,6 +36,23 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     """
     Creates a new user with a hashed password and stores it in the database.
     """
+    if (
+        not create_user_request.name
+        or not create_user_request.username
+        or not create_user_request.password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Name, username, and password are required",
+        )
+    existing_user = (
+        db.query(Users).filter(Users.username == create_user_request.username).first()
+    )
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists",
+        )
     create_user_model = Users(
         name=create_user_request.name,
         username=create_user_request.username,
