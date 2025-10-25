@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
 
-export default function Events() {
+export default function Agenda() {
     return (
         <div>
             <h1>Events Page</h1>
-            <Link to="/">Back to Home</Link>
+            <Link to="/home">Home</Link>
         </div>
     );
 }

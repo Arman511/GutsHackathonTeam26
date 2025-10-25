@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Events from "./pages/Events";
+import Login from "./pages/Login.jsx";
+import Agenda from "./pages/Agenda.jsx";
 import Groups from "./pages/Groups";
 import "./App.css";
 
@@ -21,7 +21,7 @@ export default function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/events" element={<Events />} />
+                    <Route path="/events" element={<Agenda />} />
                     <Route path="/groups" element={<Groups />} />
                 </Routes>
             </div>
