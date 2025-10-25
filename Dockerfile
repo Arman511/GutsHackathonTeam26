@@ -1,6 +1,8 @@
 FROM node:24-slim AS frontend-builder
+
 WORKDIR /build
 COPY guts-template/package*.json /build/guts-template/
+
 WORKDIR /build/guts-template
 RUN node -v && npm -v
 
@@ -10,7 +12,7 @@ WORKDIR /build
 COPY guts-template/vite.config.js /build/guts-template/
 COPY guts-template /build/guts-template/
 
-
+WORKDIR /build/guts-template
 
 RUN npm run build
 
