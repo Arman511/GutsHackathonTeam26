@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Quiz from "../components/Quiz";
 import { useState } from "react";
 import EventSwiper from "../components/EventSwiper";
 
@@ -42,11 +41,6 @@ const mockEvents = [
 
 export default function Home() {
     const [showSwiper, setShowSwiper] = useState(0)
-
-    const handleAllRated = () => {
-        alert("Thanks")
-        setShowSwiper(false)
-    }
     return (
         <div className="home-container">
             <header>
