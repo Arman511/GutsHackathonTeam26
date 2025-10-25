@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import text
+import re
 from backend.dependencies import db_dependency as db_dependency
 from backend.auth import get_current_user
 from starlette import status
@@ -131,23 +132,43 @@ async def search_locations(
     conditions = []
     params = {}
     for field, value in query.model_dump().items():
-        if value is not None:
-            if field == "keywords":
-                keyword_conditions = []
-                for idx, keyword in enumerate(value):
-                    key = f"keyword_{idx}"
-                    keyword_conditions.append(f"keywords ILIKE :{key}")
-                    params[key] = f"%{keyword}%"
-                conditions.append("(" + " OR ".join(keyword_conditions) + ")")
-            else:
-                conditions.append(f"{field} = :{field}")
-                params[field] = value
+        if value is None:
+            continue
+        if (
+            field in ("vegetarian", "food", "drinks", "group_activity", "accessible")
+            and value is False
+        ):
+            continue
+
+        if field == "open_time":
+            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
+                raise HTTPException(
+                    status_code=400, detail="open_time must be in HH:MM 24-hour format"
+                )
+            conditions.append("open_time <= :open_time")
+            params["open_time"] = value
+        elif field == "close_time":
+            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
+                raise HTTPException(
+                    status_code=400, detail="close_time must be in HH:MM 24-hour format"
+                )
+            conditions.append("close_time >= :close_time")
+            params["close_time"] = value
+        elif field == "keywords":
+            keyword_conditions = []
+            for idx, keyword in enumerate(value):
+                key = f"keyword_{idx}"
+                keyword_conditions.append(f"keywords ILIKE :{key}")
+                params[key] = f"%{keyword}%"
+            conditions.append("(" + " OR ".join(keyword_conditions) + ")")
+        else:
+            conditions.append(f"{field} = :{field}")
+            params[field] = value
     if not conditions:
-        raise HTTPException(
-            status_code=400, detail="At least one search parameter must be provided"
-        )
-    sql += " AND ".join(conditions)
-    locations = db.execute(text(sql), params).fetchall()
+        locations = db.execute(text('SELECT * FROM "LocationInfo"')).fetchall()
+    else:
+        sql += " AND ".join(conditions)
+        locations = db.execute(text(sql), params).fetchall()
     formatted_locations = []
     for location in locations:
         formatted_locations.append(
@@ -249,9 +270,35 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     where_clauses = []
     params = {}
     for key, value in formatted_event_config.items():
-        if value is not None:
-            where_clauses.append(f"{key} = :{key}")
-            params[key] = value
+        if value is None:
+            continue
+
+        if (
+            key in ("vegetarian", "food", "drinks", "group_activity", "accessible")
+            and value is False
+        ):
+            continue
+
+        # time handling: want locations that cover the event times
+        if key == "open_time":
+            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
+                raise HTTPException(
+                    status_code=400, detail="open_time must be in HH:MM 24-hour format"
+                )
+            where_clauses.append("open_time <= :open_time")
+            params["open_time"] = value
+            continue
+        if key == "close_time":
+            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
+                raise HTTPException(
+                    status_code=400, detail="close_time must be in HH:MM 24-hour format"
+                )
+            where_clauses.append("close_time >= :close_time")
+            params["close_time"] = value
+            continue
+
+        where_clauses.append(f"{key} = :{key}")
+        params[key] = value
     if not where_clauses:
         raise HTTPException(
             status_code=400, detail="No criteria found for event filtering"
