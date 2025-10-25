@@ -10,14 +10,14 @@ export default function Login() {
         const username = formData.get("username");
         const password = formData.get("password");
 
-        const response = 
+        const response = await login(username, password);
 
         if (response.ok) {
             const data = await response.json();
             setAccessToken(data.access_token);
-            // Redirect to home or perform other actions
+            navigate("/home");
         } else {
-            // Handle login error
+            console.error("Unable to login");
         }
     };
 
