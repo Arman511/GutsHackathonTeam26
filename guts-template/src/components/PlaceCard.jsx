@@ -1,9 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { motion } from "motion/react"
 import Rating from "@mui/material/Rating";
 
 
 export default function PlaceCard(props) {
+
+
     return (
         <div style={{display: 'flex', width: 1000, alignItems: 'center', background: 'white', justifyContent: 'center'}}>
             <h1>hello</h1>
