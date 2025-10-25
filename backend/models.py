@@ -31,9 +31,11 @@ class CreateEventRequest(BaseModel):
     group_activity: bool
     vegetarian: bool
     drinks: bool
-    food_available: bool
+    food: bool
     accessible: bool
     formal_attire: bool
+    open_time: str
+    close_time: str
 
 
 class CreateLocationRequest(BaseModel):
@@ -147,19 +149,15 @@ class EventsInfo(Base):
     location = mapped_column(ForeignKey("LocationInfo.id"))
     description = Column(String)
     attendees = relationship("EventUsers", back_populates="event")
-
-
-class EventConfigurations(Base):
-    __tablename__ = "EventConfigurations"
-    id = Column(Integer, primary_key=True, index=True)
-    event_id = mapped_column(ForeignKey("EventsInfo.id"))
     price_range = Column(String)
     group_activity = Column(Boolean)
     vegetarian = Column(Boolean)
     drinks = Column(Boolean)
-    food_available = Column(Boolean)
+    food = Column(Boolean)
     accessible = Column(Boolean)
     formal_attire = Column(Boolean)
+    open_time = Column(String)
+    close_time = Column(String)
 
 
 class EventUsers(Base):

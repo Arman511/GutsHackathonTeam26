@@ -36,6 +36,8 @@ async def get_all_locations(user: user_dependency, db: db_dependency):
                 "id": location.id,
                 "location": location.location,
                 "description": location.description,
+                "open_time": location.open_time,
+                "close_time": location.close_time,
                 "address": location.address,
                 "google_rating": location.google_rating,
                 "price_range": location.price_range,
@@ -43,7 +45,7 @@ async def get_all_locations(user: user_dependency, db: db_dependency):
                 "group_activity": location.group_activity,
                 "vegetarian": location.vegetarian,
                 "drinks": location.drinks,
-                "food_available": location.food_available,
+                "food": location.food,
                 "accessible": location.accessible,
                 "formal_attire": location.formal_attire,
                 "reservation_needed": location.reservation_needed,
@@ -71,6 +73,8 @@ async def get_location(location_id: int, user: user_dependency, db: db_dependenc
         "id": location.id,
         "location": location.location,
         "description": location.description,
+        "open_time": location.open_time,
+        "close_time": location.close_time,
         "address": location.address,
         "google_rating": location.google_rating,
         "price_range": location.price_range,
@@ -78,7 +82,7 @@ async def get_location(location_id: int, user: user_dependency, db: db_dependenc
         "group_activity": location.group_activity,
         "vegetarian": location.vegetarian,
         "drinks": location.drinks,
-        "food_available": location.food_available,
+        "food": location.food,
         "accessible": location.accessible,
         "formal_attire": location.formal_attire,
         "reservation_needed": location.reservation_needed,
@@ -93,9 +97,12 @@ async def add_location(
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
+
     new_location = LocationInfo(
         location=location_data.location,
         description=location_data.description,
+        open_time=location_data.open_time,
+        close_time=location_data.close_time,
         address=location_data.address,
         google_rating=location_data.google_rating,
         price_range=location_data.price_range,
@@ -103,7 +110,7 @@ async def add_location(
         group_activity=location_data.group_activity,
         vegetarian=location_data.vegetarian,
         drinks=location_data.drinks,
-        food_available=location_data.food,
+        food=location_data.food,
         accessible=location_data.accessible,
         formal_attire=location_data.formal_attire,
         reservation_needed=location_data.reservation_needed,
@@ -123,7 +130,7 @@ async def search_locations(
     sql = """SELECT * FROM "LocationInfo" WHERE """
     conditions = []
     params = {}
-    for field, value in query.dict().items():
+    for field, value in query.model_dump().items():
         if value is not None:
             if field == "keywords":
                 keyword_conditions = []
@@ -148,6 +155,8 @@ async def search_locations(
                 "id": location.id,
                 "location": location.location,
                 "description": location.description,
+                "open_time": location.open_time,
+                "close_time": location.close_time,
                 "address": location.address,
                 "google_rating": location.google_rating,
                 "price_range": location.price_range,
@@ -155,7 +164,7 @@ async def search_locations(
                 "group_activity": location.group_activity,
                 "vegetarian": location.vegetarian,
                 "drinks": location.drinks,
-                "food_available": location.food_available,
+                "food": location.food,
                 "accessible": location.accessible,
                 "formal_attire": location.formal_attire,
                 "reservation_needed": location.reservation_needed,
@@ -218,7 +227,7 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     event_config = db.execute(
         text(
             """
-        SELECT * FROM "EventConfigurations" WHERE event_id = :event_id
+        SELECT * FROM "EventInfo" WHERE event_id = :event_id
         """
         ),
         {"event_id": event_id},
@@ -226,12 +235,14 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     if event_config is None:
         raise HTTPException(status_code=404, detail="Event not found")
     formatted_event_config = {
+        "open_time": event_config.open_time,
+        "close_time": event_config.close_time,
         "price_range": event_config.price_range,
         "outdoor": event_config.outdoor,
         "group_activity": event_config.group_activity,
         "vegetarian": event_config.vegetarian,
         "drinks": event_config.drinks,
-        "food_available": event_config.food_available,
+        "food": event_config.food,
         "accessible": event_config.accessible,
         "formal_attire": event_config.formal_attire,
         "reservation_needed": event_config.reservation_needed,
