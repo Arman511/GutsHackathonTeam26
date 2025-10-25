@@ -53,7 +53,6 @@ export type LocationSearchRequest = {
     accessible?: boolean | null
     formal_attire?: boolean | null
     reservation_needed?: boolean | null
-    image_url?: string | null
 }
 
 export type LoginRequest = { username: string; password: string }

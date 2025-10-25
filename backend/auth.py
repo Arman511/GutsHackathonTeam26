@@ -80,11 +80,13 @@ def authenticate_user(username: str, password: str, db):
     return user
 
 
-def create_access_token(username: str, user_id: int, expires_delta: timedelta):
+def create_access_token(
+    username: str, name: str, user_id: int, expires_delta: timedelta
+):
     """
     Generates a JWT access token with an expiration time.
     """
-    encode = {"sub": username, "id": user_id}
+    encode = {"sub": username, "name": name, "id": user_id}
     expires = datetime.now() + expires_delta
     encode.update({"exp": expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -99,13 +101,14 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = str(payload.get("sub"))
         user_id: str = str(payload.get("id"))
-        if username is None or user_id is None:
+        name: str = str(payload.get("name"))
+        if username is None or user_id is None or name is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate user",
             )
 
-        return {"username": username, "id": user_id}
+        return {"username": username, "name": name, "id": user_id}
 
     except JWTError:
         raise HTTPException(
@@ -128,8 +131,22 @@ async def login_for_access_token(
         )
     username = str(user.username)
     user_id = user.id
+    name = str(user.name)
     token = create_access_token(
-        username, user_id, timedelta(minutes=20)  # pyright: ignore[reportArgumentType]
+        username,
+        name,
+        user_id,  # pyright: ignore[reportArgumentType]
+        timedelta(minutes=20),
     )
 
     return {"access_token": token, "token_type": "bearer"}
+
+
+@auth_router.get("/me", status_code=status.HTTP_200_OK)
+async def get_me(user: Annotated[dict, Depends(get_current_user)]):
+    """
+    Retrieves the current authenticated user's details.
+    """
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    return {"User": user}

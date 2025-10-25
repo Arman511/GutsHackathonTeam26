@@ -76,7 +76,6 @@ class LocationSearchRequest(BaseModel):
     accessible: bool | None = None
     formal_attire: bool | None = None
     reservation_needed: bool | None = None
-    image_url: str | None = None
 
 
 class LocationRankingRequest(BaseModel):
