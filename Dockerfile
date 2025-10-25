@@ -12,18 +12,10 @@ RUN npm install
 
 RUN npm run build
 
-FROM ghcr.io/astral-sh/uv:python3.11-alpine as backend-builder
+FROM ghcr.io/astral-sh/uv:python3.11-alpine AS backend-builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    gcc \
-    libpq-dev \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 

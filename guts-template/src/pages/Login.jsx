@@ -27,7 +27,7 @@ export default function Login() {
                 console.error("Unable to login");
             }
         } catch (e) {
-            setError("Login failed. Try again.");
+            setError(e.message || "An error occurred during login");
             console.error(e);
         }
     };

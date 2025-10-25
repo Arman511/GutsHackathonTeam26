@@ -62,6 +62,7 @@ if dist_dir and dist_dir.exists():
     async def serve_index():
         if dist_dir:
             index_path = dist_dir / "index.html"
+            print(f"Serving index file from: {index_path}")
             if index_path.exists():
                 return FileResponse(index_path)
             else:

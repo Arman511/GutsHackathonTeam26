@@ -10,6 +10,7 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
     })
     if (!res.ok) {
         const text = await res.text()
+        console.error('API request failed:', { path, status: res.status, statusText: res.statusText, body: text })
         throw new Error(`API ${res.status} ${res.statusText}: ${text}`)
     }
     const contentType = res.headers.get('content-type') || ''
