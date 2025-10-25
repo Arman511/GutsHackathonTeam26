@@ -48,6 +48,8 @@ async def get_event_result(event_id: int, user: user_dependency, db: db_dependen
         if count > 0:
             average_score = total_score / count
             location_scores[loc_id] = average_score
+        else:
+            location_scores[loc_id] = 0
 
     sorted_locations = sorted(location_scores.items(), key=lambda x: x[1], reverse=True)
 
