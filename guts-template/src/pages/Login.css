@@ -37,12 +37,13 @@
     padding: 0.5rem 1rem;
     border-radius: 8px;
     border: none;
-    background: #00aaff;
+    background: #0063d3;
     color: #fff;
     font-weight: bold;
     cursor: pointer;
 }
 
 .login-box button:hover {
+    padding: 0.5rem 1rem;
     background: #0088cc;
 }
