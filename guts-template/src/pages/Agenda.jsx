@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Agenda.css";
 
+
+// this needs to be an endpoint callllllllll
+// fetching data
 const eventsData = [
     {
         id: 1,
@@ -119,8 +122,8 @@ export default function Agenda() {
                                 <h3>{event.title}</h3>
                                 <p>{event.date}</p>
                                 <p>Group: {event.group}</p>
+                                {expandedId === event.id ? "🔽 Details" : "▶️ Details"}
                             </div>
-                            {expandedId === event.id ? "🔽 Details" : "▶️ Details"}
                         </div>
                         {expandedId === event.id && (
                             <div style={{ marginTop: "10px" }}>
