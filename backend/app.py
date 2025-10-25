@@ -28,7 +28,7 @@ async def user(user: user_dependency, db: db_dependency):
 @app.get("/api/users", status_code=status.HTTP_200_OK)
 async def get_users(db: db_dependency):
     users = db.query(models.Users).all()
-    return Response(content={"users": users})
+    return {"users": users}
 
 
 @app.get("/api/health", status_code=status.HTTP_200_OK)
