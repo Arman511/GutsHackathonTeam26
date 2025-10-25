@@ -245,7 +245,6 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         "food": event_config.food,
         "accessible": event_config.accessible,
         "formal_attire": event_config.formal_attire,
-        "reservation_needed": event_config.reservation_needed,
     }
     where_clauses = []
     params = {}
