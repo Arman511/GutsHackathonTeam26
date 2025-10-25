@@ -141,6 +141,10 @@ class ReviewData(Base):
     user_rating = Column(Integer)
     location = relationship("LocationInfo", back_populates="reviews")
 
+class AddReviewRequest(BaseModel):
+    location_id: int
+    user_review: str
+    user_rating: int
 
 # own table for the different events that get made by event planner
 class EventsInfo(Base):

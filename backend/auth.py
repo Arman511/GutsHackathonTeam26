@@ -150,3 +150,13 @@ async def get_me(user: Annotated[dict, Depends(get_current_user)]):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return {"User": user}
+
+@auth_router.get("/get_user_by_id/{user_id}", status_code=status.HTTP_200_OK)
+async def get_user_by_id(user_id: int, db: db_dependency):
+    """
+    Retrieves username and name for a given user_id.
+    """
+    user = db.query(Users).filter(Users.id == user_id).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"username": user.username, "name": user.name}
