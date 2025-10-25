@@ -1,30 +1,30 @@
-import { useState } from 'react'
-import './App.css'
-import SplitText from "./SplitText";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login.jsx";
+import Agenda from "./pages/Agenda.jsx";
+import Groups from "./pages/Groups";
+import "./App.css";
 
-const handleAnimationComplete = () => {
-    console.log('All letters have animated!');
-};
+export default function App() {
+    return (
+        <Router>
+            <div>
+                <h1>Hello World</h1>
 
-function App() {
-  const [count, setCount] = useState(0)
+                <nav style={{ marginBottom: "1rem" }}>
+                    <Link to="/">Home</Link> |{" "}
+                    <Link to="/login">Login</Link> |{" "}
+                    <Link to="/events">Events</Link> |{" "}
+                    <Link to="/groups">Groups</Link>
+                </nav>
 
-  return (
-    <>
-        <SplitText
-            text="Hello World!"
-            className="text-2xl font-semibold text-center"
-            delay={100}
-            duration={0.6}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="center"
-            onLetterAnimationComplete={handleAnimationComplete}
-        />
-    </>
-  )
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/events" element={<Agenda />} />
+                    <Route path="/groups" element={<Groups />} />
+                </Routes>
+            </div>
+        </Router>
+    );
 }
