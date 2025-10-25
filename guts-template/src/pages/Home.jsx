@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import SplitText from "./react-bits/SplitText";
+import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import EventSwiper from "../components/EventSwiper";
-
+import { useState } from "react";
 
 const mockEvents = [
     {
@@ -42,25 +43,31 @@ const mockEvents = [
 export default function Home() {
     const [showSwiper, setShowSwiper] = useState(0)
     return (
-        <div className="home-container">
-            <header>
-                <h1>Home Page</h1>
-            </header>
-            <nav className="button-group" style={{
-                display: 'flex',
-                justifyContent: 'center',
-                padding: '10px',
-                backgroundColor: '#f0f0f0',
-                borderBottom: '2px solid #ccc',
-                marginBottom: '20px',
-                gap: '20px'
-                }}>
-                <Link to="/Groups" className="btn">Groups</Link>
-                <Link to="/Agenda" className="btn">Agenda</Link>
-                <Link to="/Plan" className="btn">Plan</Link>
-            </nav>
-
-            <button
+        <BackgroundWrapper>
+            <div className="home-container">
+                <header>
+                    <SplitText
+                        text="Welcome SAS Employees!"
+                        className="text-3xl font-bold text-center"
+                        delay={0.1}
+                        style={{ color: 'white' }}
+                    />
+                </header>
+                <nav className="button-group" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '10px',
+                    backgroundColor: '#f0f0f0',
+                    borderBottom: '2px solid #ccc',
+                    marginBottom: '20px',
+                    gap: '20px'
+                    }}>
+                    <Link to="/Groups" className="btn">Groups</Link>
+                    <Link to="/Agenda" className="btn">Agenda</Link>
+                    <Link to="/Plan" className="btn">Plan</Link>
+                </nav>
+            </div>
+             <button
             onClick={()=> setShowSwiper(true)}>
                 Rate Events
             </button>
@@ -75,8 +82,7 @@ export default function Home() {
                 }}
                 />
             )}
-        </div>
+            </BackgroundWrapper>
+
     );
 }
-// looking at having sections of events
-// create event button - ha
