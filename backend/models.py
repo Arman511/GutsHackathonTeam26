@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import mapped_column, relationship
 from backend.database import Base
 
+
 # own user table
 class Users(Base):
     __tablename__ = "Users"
@@ -10,15 +11,19 @@ class Users(Base):
     name = Column(String)
     username = Column(String, unique=True)
     hashed_password = Column(String)
+    events = relationship("EventUsers", back_populates="user")
+
 
 class CreateUserRequest(BaseModel):
     name: str
     username: str
     password: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 # own table for storing location information
 class LocationInfo(Base):
@@ -39,6 +44,7 @@ class LocationInfo(Base):
     formal_attire = Column(Boolean)
     reservation_needed = Column(Boolean)
 
+
 class ReviewData(Base):
     __tablename__ = "ReviewData"
     id = Column(Integer, primary_key=True, index=True)
@@ -46,6 +52,7 @@ class ReviewData(Base):
     user_review = Column(String)
     user_rating = Column(Integer)
     location = relationship("LocationInfo", back_populates="reviews")
+
 
 # own table for the different events that get made by event planner
 class EventsInfo(Base):
@@ -58,6 +65,7 @@ class EventsInfo(Base):
     attendees = relationship("EventUsers", back_populates="event")
 
 
+
 class EventUsers(Base):
     __tablename__ = "EventUsers"
     id = Column(Integer, primary_key=True, index=True)
@@ -66,13 +74,10 @@ class EventUsers(Base):
     event = relationship("EventsInfo", back_populates="attendees")
     user = relationship("Users", back_populates="events")
 
+
 class UserRankings(Base):
     __tablename__ = "UserRankings"
     id = Column(Integer, primary_key=True, index=True)
     user_id = mapped_column(ForeignKey("Users.id"))
     location_id = mapped_column(ForeignKey("LocationInfo.id"))
     ranking = Column(Integer)
-
-
-
-
