@@ -113,60 +113,30 @@ export default function Agenda() {
             {/* Events list */}
             <div className="events-container">
                 {filteredEvents.map((event) => (
-                    <div
-                        key={event.id}
-                        className="event-card"
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            marginBottom: "20px",
-                            border: "1px solid #ccc",
-                            borderRadius: "8px",
-                            overflow: "hidden",
-                        }}
-                    >
+                    <div key={event.id} className="event-card">
                         {/* Image on the left */}
                         {event.image && (
-                            <div style={{ flex: "0 0 200px", height: "200px", overflow: "hidden" }}>
-                                <img
-                                    src={event.image}
-                                    alt={event.title}
-                                    style={{
-                                        width: "100%",
-                                        height: "100%",
-                                        objectFit: "cover",
-                                    }}
-                                />
+                            <div className="event-image">
+                                <img src={event.image} alt={event.title} />
                             </div>
                         )}
 
                         {/* Event details on the right */}
-                        <div style={{ flex: 1, padding: "10px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                            <div>
+                        <div className="event-details">
+                            <div className="event-info">
                                 <h3>{event.title}</h3>
                                 <p>{event.date}</p>
                                 <p>Group: {event.group}</p>
                             </div>
 
-                            {/* More info toggle and expandable details */}
-                            <div style={{ marginTop: "10px" }}>
-                                <button
-                                    onClick={() => toggleExpand(event.id)}
-                                    style={{
-                                        marginTop: "10px",
-                                        backgroundColor: "#007BFF",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "5px",
-                                        padding: "5px 10px",
-                                        cursor: "pointer",
-                                    }}
-                                >
+                            {/* More info toggle */}
+                            <div className="event-more">
+                                <button onClick={() => toggleExpand(event.id)}>
                                     {expandedId === event.id ? "🔽 Hide Details" : "▶️ More Info"}
                                 </button>
 
                                 {expandedId === event.id && (
-                                    <div style={{ marginTop: "10px" }}>
+                                    <div className="event-extra">
                                         {event.details || "Details not decided yet"}
                                     </div>
                                 )}
