@@ -1,4 +1,17 @@
 services:
+  main_system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: guts-system
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nightout_recommender_db
+      - DB_USER=db_user
+      - DB_PASSWORD=db_pass
+    ports:
+      - "8000:8000"
   postgres:
     image: postgres:15-alpine
     environment:

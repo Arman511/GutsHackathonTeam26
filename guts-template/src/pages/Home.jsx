@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SplitText from "./react-bits/SplitText";
+import Quiz from "../components/Quiz";
 
 export default function Home() {
     return (
@@ -24,6 +25,11 @@ export default function Home() {
                 <Link to="/Agenda" className="btn">Agenda</Link>
                 <Link to="/Plan" className="btn">Plan</Link>
             </nav>
+            <div>
+                <Quiz />
+            </div>
+
+            
 
         </div>
     );

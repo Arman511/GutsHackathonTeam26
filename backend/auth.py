@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
+import os
 from typing import Annotated
-
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -14,11 +14,11 @@ from backend.database import SessionLocal
 from backend.dependencies import db_dependency
 from backend.models import CreateUserRequest, Token, Users
 
-router = APIRouter(prefix="/auth", tags=["auth"])
-SECRET_KEY = "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+)
 ALGORITHM = "HS256"
-
-# We use bcrypt to securely hash user passwords:
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
@@ -31,7 +31,7 @@ def get_db():
         db.close()
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@auth_router.post("/register", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     """
     Creates a new user with a hashed password and stores it in the database.
@@ -96,7 +96,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         )
 
 
-@router.post("/token", response_model=Token, status_code=status.HTTP_200_OK)
+@auth_router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency
 ):

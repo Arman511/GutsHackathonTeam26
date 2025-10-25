@@ -1,0 +1,18 @@
+services:
+  main_system:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: guts-system
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - guts-system
+
+networks:
+  default:
+    name: nginx_proxy
+    external: true
