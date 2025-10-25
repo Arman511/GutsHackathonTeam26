@@ -11,7 +11,7 @@ from backend.database import SessionLocal, engine
 from backend.dependencies import db_dependency as db_dependency
 
 app = FastAPI()
-app.include_router(router)
+app.include_router(router, prefix="/api")
 
 models.Base.metadata.create_all(bind=engine)
 
