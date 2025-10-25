@@ -119,6 +119,7 @@ async def get_created_events(user: user_dependency, db: db_dependency):
 
 
 from backend.models import (
+    AttendEventRequest,
     CreateEventRequest,
     EventsInfo,
     EventUsers,
@@ -180,3 +181,43 @@ async def get_event_attendees(event_id: int, user: user_dependency, db: db_depen
             {"id": attendee.id, "name": attendee.name, "username": attendee.username}
         )
     return {"attendees": formatted_attendees}
+
+
+@event_router.post("/attend_event/{event_id}", status_code=status.HTTP_200_OK)
+async def attend_event(
+    event_id: int,
+    user: user_dependency,
+    db: db_dependency,
+    user_id: AttendEventRequest,
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    validate_user_id = db.execute(
+        text('SELECT id FROM "Users" WHERE id = :user_id'),
+        {"user_id": user_id.user_id},
+    ).fetchone()
+    if not validate_user_id:
+        raise HTTPException(status_code=404, detail="User not found")
+    validate_event_id = db.execute(
+        text('SELECT id FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    ).fetchone()
+    if not validate_event_id:
+        raise HTTPException(status_code=404, detail="Event not found")
+    existing_attendance = db.execute(
+        text(
+            'SELECT * FROM "EventUsers" WHERE user_id = :user_id AND event_id = :event_id'
+        ),
+        {"user_id": user_id.user_id, "event_id": event_id},
+    ).fetchone()
+    if existing_attendance:
+        return {"message": "User is already attending the event"}
+    db.execute(
+        text(
+            'INSERT INTO "EventUsers" (user_id, event_id) VALUES (:user_id, :event_id)'
+        ),
+        {"user_id": user_id.user_id, "event_id": event_id},
+    )
+    db.commit()
+    return {"message": "Users marked as attending the event successfully"}
