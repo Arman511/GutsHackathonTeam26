@@ -1,13 +1,13 @@
 .agenda-container {
-    padding: 15px;
+    padding: 5px;
     font-family: Arial, sans-serif;
 }
 
 .filters {
-    margin: 20px 0;
+    margin: 10px 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
 }
 
 .filter-button {

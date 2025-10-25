@@ -23,5 +23,3 @@ export default function Home() {
         </div>
     );
 }
-// looking at having sections of events
-// create event button - ha
