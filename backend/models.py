@@ -60,11 +60,10 @@ class EventsInfo(Base):
     id = Column(Integer, primary_key=True, index=True)
     event_name = Column(String)
     event_date = Column(String)
-    location = relationship("LocationInfo") # idk if this is gonna work
+    location = relationship("LocationInfo")
+    location_id = mapped_column(ForeignKey("LocationInfo.id"))
     description = Column(String)
     attendees = relationship("EventUsers", back_populates="event")
-
-
 
 class EventUsers(Base):
     __tablename__ = "EventUsers"
