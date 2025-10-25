@@ -14,6 +14,8 @@ export type CreateEventRequest = {
 }
 export type LocationRankingRequest = { location_id: number; ranking: number }
 
+export type AttendEventRequest = { user_id: number }
+
 export type CreateLocationRequest = {
     location: string
     open_time: string

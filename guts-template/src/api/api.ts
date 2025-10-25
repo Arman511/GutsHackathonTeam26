@@ -1,4 +1,4 @@
-import { CreateEventRequest, CreateLocationRequest, LocationRankingRequest, LocationSearchRequest, LoginRequest, LoginResponse, RegisterRequest, CreateKeywordRequest } from "./types"
+import { CreateEventRequest, CreateLocationRequest, LocationRankingRequest, LocationSearchRequest, LoginRequest, LoginResponse, RegisterRequest, CreateKeywordRequest, AttendEventRequest } from "./types"
 
 
 async function request(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
@@ -116,4 +116,8 @@ export async function getUsers() {
 
 export async function healthCheck() {
     return request('/api/health', { method: 'GET' })
+}
+
+export async function attendEvent(event_id: number, user_id: AttendEventRequest) {
+    return loggedInRequest(`/api/events/attend_event/${event_id}`, { method: 'POST', body: JSON.stringify(user_id) })
 }
