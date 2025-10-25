@@ -1,59 +1,75 @@
 html, body, #root {
-    height: 100%;
+    min-height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
-}
-
-/* Center the entire page content */
-.plan-container {
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;       /* centers horizontally */
-    justify-content: center;   /* centers vertically */
-    min-height: 90vh;         /* take full screen height */
-    width: 80vh;               /* ensure full horizontal space */
-    background-color: #f9f9f9;
+    background: transparent;
     font-family: Arial, sans-serif;
     box-sizing: border-box;
-    padding: 20px;             /* prevent sticking to screen edges */
+    overflow: hidden;
 }
 
-/* Limit the form width and add card-like styling */
+.background-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.plan-container {
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 800px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(255,255,255,0);
+    border-radius: 30px;
+}
+
 .plan-form {
-    background-color: #fff;
+    background-color: white;
     padding: 30px 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
     width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
+    margin-top: 20px;
     text-align: center;
     margin-bottom: 20px;
+    color: white;
 }
 
-/* Form group spacing */
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-/* Participant input styling */
 .participant-input-container input {
     padding: 10px;
     width: 100%;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    border-radius: 20px;
+    border: 1px solid #0088cc;
+    background-color: rgba(255,255,255,0.1);
+    color: black;
 }
 
-/* Participant bubbles */
+.participant-bubbles .bubble {
+    background-color: #ffffff33;
+    color: black;
+    border: 2px solid #0088cc;
+    border-radius: 20px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    backface-visibility: hidden;
+    transform: translate3d(0,0,0);
+    will-change: background-color, color, border-color;
+}
+
 .participant-bubbles {
     margin-top: 10px;
     display: flex;
@@ -61,64 +77,46 @@ h1 {
     gap: 8px;
 }
 
-.bubble {
-    background-color: #e0e0e0;
-    border-radius: 20px;
-    padding: 5px 12px;
-    cursor: pointer;
-}
-
-.bubble:hover {
-    background-color: #d1d1d1;
-}
-
-/* Price buttons */
-.price-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.price-btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: 1px solid #007bff;
-    background-color: white;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.price-btn.selected {
-    background-color: #007bff;
+.participant-bubbles .bubble:hover {
+    background-color: #0088cc;
     color: white;
+    border-color: #0063d3;
 }
 
-/* Preferences */
-.preferences-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
+.price-btn,
 .pref-btn {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: 1px solid #007bff;
-    background-color: white;
+    border-radius: 20px;
+    border: 1px solid #0088cc;
+    color: black;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+    margin: 2px;
+    backface-visibility: hidden;
+    transform: translate3d(0,0,0);
+    will-change: background-color, color, border-color;
 }
 
+.price-btn.selected,
 .pref-btn.selected {
-    background-color: #007bff;
+    background-color: #0088cc;
     color: white;
+    border-color: #0088cc;
 }
 
-/* Submit button */
+.price-btn:hover,
+.pref-btn:hover,
+.price-btn.selected,
+.pref-btn.selected {
+    background-color: #0088cc;
+    color: white;
+    border-color: #0088cc;
+}
+
 .submit-btn {
     padding: 12px 20px;
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
+    border-radius: 20px;
+    background-color: #0088cc;
     color: white;
     font-weight: bold;
     cursor: pointer;
@@ -126,19 +124,20 @@ h1 {
 }
 
 .submit-btn:hover {
-    background-color: #0056b3;
+    background-color: #0088cc;
+    color: white;
 }
 
-/* Back link styling */
 .back-link {
     display: block;
     margin-top: 25px;
     text-align: center;
-    color: #007bff;
+    color: white;
     text-decoration: none;
-    font-weight: bold;
+    transition: color 0.2s;
 }
 
 .back-link:hover {
+    color: white;
     text-decoration: underline;
 }
