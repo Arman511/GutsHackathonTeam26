@@ -6,6 +6,7 @@ const SplitText = ({
                        delay = 0.05, // seconds between letters
                        tag = "h1",
                        textAlign = "center",
+                       style = {}, // <-- accept style prop
                    }) => {
     const ref = useRef(null);
 
@@ -21,6 +22,7 @@ const SplitText = ({
             span.style.opacity = 0;
             span.style.display = "inline-block";
             span.style.transform = "translateY(20px)";
+            if (style.color) span.style.color = style.color; // <-- apply color
             element.appendChild(span);
             return span;
         });
@@ -32,14 +34,14 @@ const SplitText = ({
                 span.style.transform = "translateY(0)";
             }, i * delay * 1000);
         });
-    }, [text, delay]);
+    }, [text, delay, style.color]); // add style.color to dependency
 
     const Tag = tag;
     return (
         <Tag
             ref={ref}
             className={className}
-            style={{ display: "inline-block", textAlign }}
+            style={{ display: "inline-block", textAlign, ...style }}
         />
     );
 };
