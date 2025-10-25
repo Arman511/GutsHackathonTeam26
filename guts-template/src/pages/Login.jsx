@@ -17,6 +17,7 @@ export default function Login() {
 
         if (response.access_token) {
             setAccessToken(response.access_token);
+            localStorage.setItem("access_token", response.access_token);
             navigate("/home");
         } else {
             console.error("Unable to login");

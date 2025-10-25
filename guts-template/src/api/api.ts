@@ -16,6 +16,18 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
     return contentType.includes('application/json') ? res.json() : res.text()
 }
 
+async function loggedInRequest(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken) {
+        throw new Error('No access token found, user is not logged in')
+    }
+    const headers = {
+        'Authorization': `Bearer ${accessToken}`,
+        ...(opts.headers || {}),
+    }
+    return request(path, { ...opts, headers }, content_type)
+}
+
 export async function login(data: LoginRequest): Promise<LoginResponse> {
     const encodededData = new URLSearchParams();
     encodededData.append("username", data.username);
@@ -25,6 +37,10 @@ export async function login(data: LoginRequest): Promise<LoginResponse> {
 
 export async function register(data: RegisterRequest) {
     return request('/api/auth/register', { method: 'POST', body: JSON.stringify(data) })
+}
+
+export async function getMe() {
+    return loggedInRequest('/api/users/me', { method: 'GET' })
 }
 
 //login pass in user and password returns session token and access toekn ignore token type its always beer
