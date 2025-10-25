@@ -1,5 +1,6 @@
+from numbers import Real
 from pydantic import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import mapped_column, relationship
 from backend.database import Base
 
@@ -27,7 +28,7 @@ class CreateEventRequest(BaseModel):
     price_range: str
     outdoor: bool
     group_activity: bool
-    vegetarian_options: bool
+    vegetarian: bool
     drinks: bool
     food_available: bool
     accessible: bool
@@ -36,15 +37,18 @@ class CreateEventRequest(BaseModel):
 
 class CreateLocationRequest(BaseModel):
     location: str
+    open_time: str
+    close_time: str
     description: str
     address: str
     google_rating: int
     price_range: str
     outdoor: bool
     group_activity: bool
-    vegetarian_options: bool
+    vegetarian: bool
     drinks: bool
-    food_available: bool
+    food: bool
+    pet_friendly: bool
     accessible: bool
     formal_attire: bool
     reservation_needed: bool
@@ -53,15 +57,18 @@ class CreateLocationRequest(BaseModel):
 class LocationSearchRequest(BaseModel):
     keywords: list[str]
     location: str | None = None
+    open_time: str | None = None
+    close_time: str | None = None
     description: str | None = None
     address: str | None = None
     google_rating: int | None = None
     price_range: str | None = None
     outdoor: bool | None = None
     group_activity: bool | None = None
-    vegetarian_options: bool | None = None
+    vegetarian: bool | None = None
     drinks: bool | None = None
-    food_available: bool | None = None
+    food: bool | None = None
+    pet_friendly: bool | None = None
     accessible: bool | None = None
     formal_attire: bool | None = None
     reservation_needed: bool | None = None
@@ -81,16 +88,19 @@ class LocationInfo(Base):
     __tablename__ = "LocationInfo"
     id = Column(Integer, primary_key=True, index=True)
     location = Column(String, unique=True)
-    description = Column(String)
+    open_time = Column(String)
+    close_time = Column(String)
     address = Column(String)
+    description = Column(String)
     reviews = relationship("ReviewData", back_populates="location")
-    google_rating = Column(Integer) # avg
+    google_rating = Column(Float) # avg
     price_range = Column(String) 
     outdoor = Column(Boolean) # whether outdoor seating/area is available
     group_activity = Column(Boolean)
-    vegetarian_options = Column(Boolean)
+    vegetarian = Column(Boolean)
     drinks = Column(Boolean)
-    food_available = Column(Boolean)
+    food = Column(Boolean)
+    pet_friendly = Column(Boolean)
     accessible = Column(Boolean)
     formal_attire = Column(Boolean)
     reservation_needed = Column(Boolean)
@@ -133,7 +143,7 @@ class EventConfigurations(Base):
     event_id = mapped_column(ForeignKey("EventsInfo.id"))
     price_range = Column(String)
     group_activity = Column(Boolean)
-    vegetarian_options = Column(Boolean)
+    vegetarian = Column(Boolean)
     drinks = Column(Boolean)
     food_available = Column(Boolean)
     accessible = Column(Boolean)

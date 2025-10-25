@@ -29,7 +29,7 @@ async def populate_db(user: user_dependency, db: db_dependency):
         "price_range": "$$",
         "outdoor": True,
         "group_activity": True,
-        "vegetarian_options": True,
+        "vegetarian": True,
         "drinks": True,
         "food_available": True,
         "accessible": True,
@@ -57,8 +57,8 @@ async def populate_db(user: user_dependency, db: db_dependency):
     # db.commit()
     # db.execute(
     #     text("""
-    #     INSERT INTO "LocationInfo" (location, description, address, google_rating, price_range, outdoor, group_activity, vegetarian_options, drinks, food_available, accessible, formal_attire, reservation_needed)
-    #     VALUES (:location, :description, :address, :google_rating, :price_range, :outdoor, :group_activity, :vegetarian_options, :drinks, :food_available, :accessible, :formal_attire, :reservation_needed)
+    #     INSERT INTO "LocationInfo" (location, description, address, google_rating, price_range, outdoor, group_activity, vegetarian, drinks, food_available, accessible, formal_attire, reservation_needed)
+    #     VALUES (:location, :description, :address, :google_rating, :price_range, :outdoor, :group_activity, :vegetarian, :drinks, :food_available, :accessible, :formal_attire, :reservation_needed)
     #     """),
     #     sammple_location
     # )

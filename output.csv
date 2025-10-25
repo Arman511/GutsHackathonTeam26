@@ -1,0 +1,32 @@
+id,location,open_time,close_time,address,description,google_rating,price_range,outdoor,group_activity,vegetarian,drinks,food,pet_friendly,accessible,formal_attire,reservation_needed,image_url
+5,Suissi Vegan Kitchen,17:00,22:00,"494 Dumbarton Rd, Glasgow G11 6SL","494 Dumbarton Rd, Glasgow G11 6SL",4.9,£15-25 pp,f,f,t,f,t,f,f,f,t,https://images.happycow.net/venues/1024/16/05/hcmp160574_3015942.jpeg
+7,The 78,12:00,24:00,"10-14 Kelvinhaugh St, Finnieston G3 8NU","The 78 is a vibrant bar in Glasgow with a relaxed atmosphere, featuring candle-lit spaces, a garden area, and a variety of food and drinks, making it a popular spot for socializing.",4.5,£10-20 pp,t,f,t,t,t,t,t,f,t,https://images.happycow.net/venues/1024/11/77/hcmp11778_284719.jpeg
+8,Go Quest Adventures,N/A,N/A,"Ballyogan Business Park, Unit 6, Ballyogan Rd, Dublin 18, D18 CF57, Ireland",App-based adventure across Glasgow centre,4.8,£20 pp,t,t,f,f,f,f,t,f,t,https://static.designmynight.com/uploads/2024/06/New-glasgow-phone-optimised.png
+9,Game of Throwing Glasgow,12:00,22:00,"60 Oswald St, Glasgow G1 4PL","People say this leisure center offers
+fun axe throwing with interactive
+games and different throwing
+techniques. They highlight the helpful
+tips and demonstrations provided by
+the staff, and the safe and enjoyable
+experience. They also like the friendly
+and attentive service.
+0+44 Summarised ",4.9,£25 pp,f,t,f,f,f,f,t,f,t,https://images.squarespace-cdn.com/content/v1/5f96ae852e14f81cac176e94/78c4cf35-4a03-4409-96e5-4502f90c2678/0F6A2034.jpg
+10,The Craft Pottery Studio,11:00,20:00,"120 West Campbell St, Glasgow G2 4TZ","The Craft Pottery Studio is a welcoming pottery and teaching space in Glasgow city centre. Run by expert potters, it offers classes, workshops, and studio rentals, making ceramics accessible and enjoyable for all skill levels.",4.8,£25-35 pp,f,t,f,f,f,f,t,f,t,https://images.squarespace-cdn.com/content/v1/6335762304974d1b2715ac96/ff948237-ac87-462a-9a30-c0e998251a4e/Untitled+design+%2845%29.jpg
+6,Chinaski's,12:00,24:00,"239 North St, Glasgow G3 7DL","Compact candle-lit barcelebrating Charles Bukowskiand offering a choice ofbourbons, plus garden.",4.5,£10-30 pp,t,f,t,t,t,t,t,f,f,https://media.timeout.com/images/101765607/image.jpg
+1,Escape Glasgow,10:00,22:00,"62 Renfield St, Glasgow G2 1NF","Attraction where players have
+60 minutes to solve puzzles
+& escape from 1 of 5 themed
+rooms.",4.7,£18-25 pp,f,t,f,f,f,f,t,f,t,https://theescaperoomer.com/wp-content/uploads/2024/05/IMG_4907.jpg
+2,Bowlarama,11:00,02:00,"22 Glassford St, Glasgow G1 1UL","People say this bowling alley offers
+a fun vibe and a variety of games
+including darts. They also highlight
+the friendly and helpful staff, and
+the accommodating service for large
+groups and people with disabilities.
+Other reviews mention the prices can
+be high",4.3,£15-25 pp,f,t,t,t,t,t,t,f,t,https://www.bowlarama.co.uk/wp-content/uploads/2020/06/carousel7.jpg
+3,Great Western Golf,08:00,22:00,"2700 Great Western Rd, Clydebank G81 2XT","Great Western Golf features 65 heated and 9 outdoor Trackman bays overlooking a floodlit range. Enjoy the unique 18-hole dinosaur-themed adventure golf course, Jurassic Parrr—perfect for golfers and families.",4.4,£20-30 pp,t,t,f,t,t,t,t,t,t,https://images.squarespace-cdn.com/content/v1/62ab7214dc37044b75c43091/e7a8dda4-79e8-49a2-99c5-f851784a892f/Great+Western+Golf_Aug_2023_Lucy+Knott+Photography+%2824%29.jpg
+4,Curlers Rest,12:00,24:00,"256-260 Byres Rd, Glasgow G12 8SH","Vibrant yet laid-back pub
+with old-meets-new decor
+featuring exposed brickwork
+and an open fire.",4.2,£15-25 pp,t,f,t,t,t,t,t,f,f,https://cdn.mbplc.io/step-gateway-external/06/07/4470607.jpg
