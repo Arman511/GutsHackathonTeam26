@@ -120,7 +120,6 @@ async def get_created_events(user: user_dependency, db: db_dependency):
 
 from backend.models import (
     CreateEventRequest,
-    EventConfigurations,
     EventsInfo,
     EventUsers,
 )
@@ -139,6 +138,15 @@ async def create_event(
         event_date=event_data.event_date,
         location=event_data.location,
         description=event_data.description,
+        price_range=event_data.price_range,
+        group_activity=event_data.group_activity,
+        vegetarian=event_data.vegetarian,
+        drinks=event_data.drinks,
+        food=event_data.food,
+        accessible=event_data.accessible,
+        formal_attire=event_data.formal_attire,
+        open_time=event_data.open_time,
+        close_time=event_data.close_time,
     )
     db.add(new_event)
     db.commit()
@@ -147,20 +155,6 @@ async def create_event(
     # Add the creator as an attendee
     event_user = EventUsers(event_id=new_event.id, user_id=user_id)
     db.add(event_user)
-    db.commit()
-
-    # Create event configurations
-    event_config = EventConfigurations(
-        event_id=new_event.id,
-        price_range=event_data.price_range,
-        group_activity=event_data.group_activity,
-        vegetarian_options=event_data.vegetarian,
-        drinks=event_data.drinks,
-        food_available=event_data.food_available,
-        accessible=event_data.accessible,
-        formal_attire=event_data.formal_attire,
-    )
-    db.add(event_config)
     db.commit()
 
     return {"message": "Event created successfully", "event_id": new_event.id}

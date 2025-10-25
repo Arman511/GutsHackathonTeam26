@@ -8,6 +8,7 @@ from starlette import status
 user_dependency = Annotated[dict, Depends(get_current_user)]
 populate_router = APIRouter(prefix="/populate", tags=["populate"])
 
+
 @populate_router.post("/populate_db", status_code=status.HTTP_200_OK)
 async def populate_db(user: user_dependency, db: db_dependency):
     sample_keywords = ["park", "outdoor", "nature", "walking", "picnic"]
@@ -31,11 +32,11 @@ async def populate_db(user: user_dependency, db: db_dependency):
         "group_activity": True,
         "vegetarian": True,
         "drinks": True,
-        "food_available": True,
+        "food": True,
         "accessible": True,
         "formal_attire": False,
         "reservation_needed": False,
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg/330px-Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg"
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg/330px-Global_Citizen_Festival_Central_Park_New_York_City_from_NYonAir_%2815351915006%29.jpg",
     }
 
     sample_location_keywords = [
@@ -57,8 +58,8 @@ async def populate_db(user: user_dependency, db: db_dependency):
     # db.commit()
     # db.execute(
     #     text("""
-    #     INSERT INTO "LocationInfo" (location, description, address, google_rating, price_range, outdoor, group_activity, vegetarian, drinks, food_available, accessible, formal_attire, reservation_needed)
-    #     VALUES (:location, :description, :address, :google_rating, :price_range, :outdoor, :group_activity, :vegetarian, :drinks, :food_available, :accessible, :formal_attire, :reservation_needed)
+    #     INSERT INTO "LocationInfo" (location, description, address, google_rating, price_range, outdoor, group_activity, vegetarian, drinks, food, accessible, formal_attire, reservation_needed)
+    #     VALUES (:location, :description, :address, :google_rating, :price_range, :outdoor, :group_activity, :vegetarian, :drinks, :food, :accessible, :formal_attire, :reservation_needed)
     #     """),
     #     sammple_location
     # )
@@ -93,21 +94,23 @@ async def populate_db(user: user_dependency, db: db_dependency):
     # )
     # db.commit()
 
-    sample_user_review = [{
-        "location_id": 1,
-        "user_review": "Great place to relax and enjoy nature!",
-        "user_rating": 5,
-    },
-    {
-        "location_id": 1,
-        "user_review": "Beautiful scenery and lots of activities.",
-        "user_rating": 4,
-    },
-    {
-        "location_id": 1,
-        "user_review": "A must-visit spot in NYC.",
-        "user_rating": 5,
-    }]
+    sample_user_review = [
+        {
+            "location_id": 1,
+            "user_review": "Great place to relax and enjoy nature!",
+            "user_rating": 5,
+        },
+        {
+            "location_id": 1,
+            "user_review": "Beautiful scenery and lots of activities.",
+            "user_rating": 4,
+        },
+        {
+            "location_id": 1,
+            "user_review": "A must-visit spot in NYC.",
+            "user_rating": 5,
+        },
+    ]
 
     # for review in sample_user_review:
     #     db.execute(
@@ -119,16 +122,18 @@ async def populate_db(user: user_dependency, db: db_dependency):
     #     )
     # db.commit()
 
-    sample_user_rankings = [{
-        "user_id": 2,
-        "location_id": 1,
-        "ranking_score": 4,
-    },
-    {
-        "user_id": 1,
-        "location_id": 1,
-        "ranking_score": 5,
-    }]
+    sample_user_rankings = [
+        {
+            "user_id": 2,
+            "location_id": 1,
+            "ranking_score": 4,
+        },
+        {
+            "user_id": 1,
+            "location_id": 1,
+            "ranking_score": 5,
+        },
+    ]
 
     # for ranking in sample_user_rankings:
     #     db.execute(
@@ -139,6 +144,5 @@ async def populate_db(user: user_dependency, db: db_dependency):
     #         ranking
     #     )
     # db.commit()
-
 
     return {"message": "Database populated with initial event data"}

@@ -6,9 +6,9 @@ export type CreateEventRequest = {
     price_range: string
     outdoor: boolean
     group_activity: boolean
-    vegetarian_options: boolean
+    vegetarian: boolean
     drinks: boolean
-    food_available: boolean
+    food: boolean
     accessible: boolean
     formal_attire: boolean
 }
