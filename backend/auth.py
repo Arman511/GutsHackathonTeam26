@@ -36,6 +36,23 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     """
     Creates a new user with a hashed password and stores it in the database.
     """
+    if (
+        not create_user_request.name
+        or not create_user_request.username
+        or not create_user_request.password
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Name, username, and password are required",
+        )
+    existing_user = (
+        db.query(Users).filter(Users.username == create_user_request.username).first()
+    )
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already exists",
+        )
     create_user_model = Users(
         name=create_user_request.name,
         username=create_user_request.username,
