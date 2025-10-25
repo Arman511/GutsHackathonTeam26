@@ -227,7 +227,7 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     event_config = db.execute(
         text(
             """
-        SELECT * FROM "EventInfo" WHERE event_id = :event_id
+        SELECT * FROM "EventsInfo" WHERE id = :event_id
         """
         ),
         {"event_id": event_id},
@@ -248,16 +248,45 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         "reservation_needed": event_config.reservation_needed,
     }
     where_clauses = []
+    params = {}
     for key, value in formatted_event_config.items():
         if value is not None:
-            where_clauses.append(f"{key} = {value}")
+            where_clauses.append(f"{key} = :{key}")
+            params[key] = value
+    if not where_clauses:
+        raise HTTPException(
+            status_code=400, detail="No criteria found for event filtering"
+        )
     sql = """SELECT * FROM "LocationInfo" WHERE """ + " AND ".join(where_clauses)
-    locations = db.execute(text(sql), formatted_event_config).fetchall()
+    locations = db.execute(text(sql), params).fetchall()
     if not locations:
         raise HTTPException(
             status_code=404, detail="No locations found matching event criteria"
         )
-    return {"locations": locations}
+    formatted_locations = []
+    for location in locations:
+        formatted_locations.append(
+            {
+                "id": location.id,
+                "location": location.location,
+                "description": location.description,
+                "open_time": location.open_time,
+                "close_time": location.close_time,
+                "address": location.address,
+                "google_rating": location.google_rating,
+                "price_range": location.price_range,
+                "outdoor": location.outdoor,
+                "group_activity": location.group_activity,
+                "vegetarian": location.vegetarian,
+                "drinks": location.drinks,
+                "food": location.food,
+                "accessible": location.accessible,
+                "formal_attire": location.formal_attire,
+                "reservation_needed": location.reservation_needed,
+                "image_url": location.image_url,
+            }
+        )
+    return {"locations": formatted_locations}
 
 
 @location_router.post("/add_google_reviews", status_code=status.HTTP_200_OK)

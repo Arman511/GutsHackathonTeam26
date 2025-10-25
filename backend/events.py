@@ -58,6 +58,40 @@ async def get_event(event_id: int, user: user_dependency, db: db_dependency):
     return {"event": formatted_event}
 
 
+@event_router.get("/all_events_details/{event_id}", status_code=status.HTTP_200_OK)
+async def get_event_details(event_id: int, user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+    event = db.execute(
+        text(
+            """
+        SELECT * FROM "EventsInfo" WHERE id = :event_id
+        """
+        ),
+        {"event_id": event_id},
+    ).fetchone()
+    if event is None:
+        raise HTTPException(status_code=404, detail="Event not found")
+    formatted_event = {
+        "id": event.id,
+        "event_name": event.event_name,
+        "event_date": event.event_date,
+        "location": event.location,
+        "description": event.description,
+        "price_range": event.price_range,
+        "outdoor": event.outdoor,
+        "group_activity": event.group_activity,
+        "vegetarian": event.vegetarian,
+        "drinks": event.drinks,
+        "food": event.food,
+        "accessible": event.accessible,
+        "formal_attire": event.formal_attire,
+        "open_time": event.open_time,
+        "close_time": event.close_time,
+    }
+    return {"event": formatted_event}
+
+
 @event_router.get("/my_attending_events", status_code=status.HTTP_200_OK)
 async def get_attending_events(user: user_dependency, db: db_dependency):
     if user is None:
@@ -140,6 +174,7 @@ async def create_event(
         location=event_data.location,
         description=event_data.description,
         price_range=event_data.price_range,
+        outdoor=event_data.outdoor,
         group_activity=event_data.group_activity,
         vegetarian=event_data.vegetarian,
         drinks=event_data.drinks,

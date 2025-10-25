@@ -152,6 +152,7 @@ class EventsInfo(Base):
     location = mapped_column(ForeignKey("LocationInfo.id"))
     description = Column(String)
     attendees = relationship("EventUsers", back_populates="event")
+    outdoor = Column(Boolean)
     price_range = Column(String)
     group_activity = Column(Boolean)
     vegetarian = Column(Boolean)

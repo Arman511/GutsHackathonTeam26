@@ -20,7 +20,7 @@ export default function Login() {
     };
 
     return (
-        <div className="login-page">
+        <div className="login-page" >
             <DomeGallery />
             <div className="login-box">
                 <h2>Login</h2>
@@ -29,7 +29,7 @@ export default function Login() {
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
                     <button type="submit">Login</button>
                 </form>
-                <button type="button" className="skip-button" onClick={handleSkip}>
+                <button type="button" className="skip-button" onClick={handleSkip} style={{ marginTop: '10px' }}>
                     Skip to Home
                 </button>
             </div>
