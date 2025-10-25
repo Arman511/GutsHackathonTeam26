@@ -1,6 +1,6 @@
 type LoginRequest = { username: string; password: string }
-type LoginResponse = { session_token: string; user_id:string}
-type RegisterRequest = { name: string, username: string; password:string}
+type LoginResponse = { session_token: string; user_id: string }
+type RegisterRequest = { name: string, username: string; password: string }
 
 async function request(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
     const res = await fetch(path, {
@@ -17,12 +17,14 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
 }
 
 export async function login(data: LoginRequest): Promise<LoginResponse> {
-    const encodededData = new URLSearchParams(data);
-    return request('/api/auth/token', { method: 'POST', body: encodededData  }, "application/x-www-form-urlencoded");
+    const encodededData = new URLSearchParams();
+    encodededData.append("username", data.username);
+    encodededData.append("password", data.password);
+    return request('/api/auth/token', { method: 'POST', body: encodededData.toString() }, "application/x-www-form-urlencoded");
 }
 
 export async function register(data: RegisterRequest) {
-    return request('/api/auth/register', { method: 'POST', body: JSON.stringify(data) })
+    return request('/api/auth/register', { method: 'POST', body: JSON.stringify(data) })
 }
 
 //login pass in user and password returns session token and access toekn ignore token type its always beer
