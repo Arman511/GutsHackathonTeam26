@@ -39,7 +39,9 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     create_user_model = Users(
         name=create_user_request.name,
         username=create_user_request.username,
-        hashed_password=bcrypt.hashpw(create_user_request.password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+        hashed_password=bcrypt.hashpw(
+            create_user_request.password.encode("utf-8"), bcrypt.gensalt()
+        ).decode("utf-8"),
     )
     db.add(create_user_model)
     db.commit()
@@ -53,7 +55,9 @@ def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
         return False
-    if not bcrypt.checkpw(password.encode("utf-8"), user.hashed_password.encode("utf-8")):
+    if not bcrypt.checkpw(
+        password.encode("utf-8"), user.hashed_password.encode("utf-8")
+    ):
         return False
     return user
 
