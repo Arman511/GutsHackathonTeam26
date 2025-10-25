@@ -1,0 +1,55 @@
+export type CreateEventRequest = {
+    event_name: string
+    event_date: string
+    location: number
+    description: string
+    price_range: string
+    outdoor: boolean
+    group_activity: boolean
+    vegetarian_options: boolean
+    drinks: boolean
+    food_available: boolean
+    accessible: boolean
+    formal_attire: boolean
+}
+export type LocationRankingRequest = { location_id: number; ranking: number }
+
+
+export type CreateLocationRequest = {
+    location: string
+    description: string
+    address: string
+    google_rating: number
+    price_range: string
+    outdoor: boolean
+    group_activity: boolean
+    vegetarian_options: boolean
+    drinks: boolean
+    food_available: boolean
+    accessible: boolean
+    formal_attire: boolean
+    reservation_needed: boolean
+    image_url: string
+}
+
+export type LocationSearchRequest = {
+    keywords: string[]
+    location?: string | null
+    description?: string | null
+    address?: string | null
+    google_rating?: number | null
+    price_range?: string | null
+    outdoor?: boolean | null
+    group_activity?: boolean | null
+    vegetarian_options?: boolean | null
+    drinks?: boolean | null
+    food_available?: boolean | null
+    accessible?: boolean | null
+    formal_attire?: boolean | null
+    reservation_needed?: boolean | null
+    image_url?: string | null
+}
+export type LoginRequest = { username: string; password: string }
+export type LoginResponse = { access_token: string; token_type: string }
+export type RegisterRequest = { name: string; username: string; password: string }
+export type CreateKeywordRequest = { keyword: string }

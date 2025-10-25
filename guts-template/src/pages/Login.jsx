@@ -14,9 +14,12 @@ export default function Login() {
         const formData = new FormData(event.target);
         const username = formData.get("username");
         const password = formData.get("password");
-
+        if (!username || !password) {
+            setError("Username and password are required");
+            return;
+        }
         try {
-            const response = await login({ username: username, password: password });
+            const response = await login({ username, password });
 
             if (response && response.access_token) {
                 setAccessToken(response.access_token);

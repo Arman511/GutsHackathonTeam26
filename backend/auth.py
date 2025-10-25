@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import os
 from typing import Annotated
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
@@ -14,10 +15,10 @@ from backend.dependencies import db_dependency
 from backend.models import CreateUserRequest, Token, Users
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
-SECRET_KEY = "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+SECRET_KEY = os.getenv(
+    "SECRET_KEY", "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
+)
 ALGORITHM = "HS256"
-
-# We use bcrypt to securely hash user passwords:
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 

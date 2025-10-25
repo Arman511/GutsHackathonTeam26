@@ -10,6 +10,7 @@ services:
       - DB_NAME=nightout_recommender_db
       - DB_USER=db_user
       - DB_PASSWORD=db_pass
+      - SECRET_KEY=TMT6RPsWdLTAcSYdMSvAihU3FKxOtBPugB8F0DpgygIA2iqNlsImDoUIzPcxp
     restart: unless-stopped
     networks:
       default:

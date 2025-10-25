@@ -19,6 +19,7 @@ class CreateUserRequest(BaseModel):
     username: str
     password: str
 
+
 class CreateEventRequest(BaseModel):
     event_name: str
     event_date: str
@@ -50,6 +51,7 @@ class CreateLocationRequest(BaseModel):
     reservation_needed: bool
     image_url: str
 
+
 class LocationSearchRequest(BaseModel):
     keywords: list[str]
     location: str | None = None
@@ -67,9 +69,15 @@ class LocationSearchRequest(BaseModel):
     reservation_needed: bool | None = None
     image_url: str | None = None
 
+
 class LocationRankingRequest(BaseModel):
     location_id: int
     ranking: int
+
+
+class CreateKeywordRequest(BaseModel):
+    keyword: str
+
 
 class Token(BaseModel):
     access_token: str
@@ -84,9 +92,9 @@ class LocationInfo(Base):
     description = Column(String)
     address = Column(String)
     reviews = relationship("ReviewData", back_populates="location")
-    google_rating = Column(Integer) # avg
-    price_range = Column(String) 
-    outdoor = Column(Boolean) # whether outdoor seating/area is available
+    google_rating = Column(Integer)  # avg
+    price_range = Column(String)
+    outdoor = Column(Boolean)  # whether outdoor seating/area is available
     group_activity = Column(Boolean)
     vegetarian_options = Column(Boolean)
     drinks = Column(Boolean)
@@ -96,16 +104,19 @@ class LocationInfo(Base):
     reservation_needed = Column(Boolean)
     image_url = Column(String)
 
+
 class Keywords(Base):
     __tablename__ = "Keywords"
     id = Column(Integer, primary_key=True, index=True)
     keyword = Column(String)
+
 
 class LocationKeywords(Base):
     __tablename__ = "LocationKeywords"
     id = Column(Integer, primary_key=True, index=True)
     location_id = mapped_column(ForeignKey("LocationInfo.id"))
     keyword_id = mapped_column(ForeignKey("Keywords.id"))
+
 
 class ReviewData(Base):
     __tablename__ = "ReviewData"
@@ -127,6 +138,7 @@ class EventsInfo(Base):
     description = Column(String)
     attendees = relationship("EventUsers", back_populates="event")
 
+
 class EventConfigurations(Base):
     __tablename__ = "EventConfigurations"
     id = Column(Integer, primary_key=True, index=True)
@@ -138,6 +150,7 @@ class EventConfigurations(Base):
     food_available = Column(Boolean)
     accessible = Column(Boolean)
     formal_attire = Column(Boolean)
+
 
 class EventUsers(Base):
     __tablename__ = "EventUsers"

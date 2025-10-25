@@ -113,7 +113,7 @@ async def add_location(
     return {"detail": "Location added successfully"}
 
 
-@location_router.get("/location_search", status_code=status.HTTP_200_OK)
+@location_router.post("/location_search", status_code=status.HTTP_200_OK)
 async def search_locations(
     query: LocationSearchRequest, user: user_dependency, db: db_dependency
 ):
