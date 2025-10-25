@@ -20,7 +20,7 @@ ALGORITHM = "HS256"
 
 # We use bcrypt to securely hash user passwords:
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
 
 def get_db():
@@ -45,6 +45,7 @@ async def create_user(db: db_dependency, create_user_request: CreateUserRequest)
     )
     db.add(create_user_model)
     db.commit()
+    return {"message": "User created successfully"}
 
 
 def authenticate_user(username: str, password: str, db):
