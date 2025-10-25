@@ -1,11 +1,16 @@
 import { Link } from "react-router-dom";
+import SplitText from "./react-bits/SplitText";
 import Quiz from "../components/Quiz";
 
 export default function Home() {
     return (
         <div className="home-container">
             <header>
-                <h1>Home Page</h1>
+                <SplitText
+                    text="Welcome Home!"
+                    className="text-3xl font-bold text-center"
+                    delay={0.1}
+                />
             </header>
             <nav className="button-group" style={{
                 display: 'flex',
@@ -29,5 +34,3 @@ export default function Home() {
         </div>
     );
 }
-// looking at having sections of events
-// create event button - ha
