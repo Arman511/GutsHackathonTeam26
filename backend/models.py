@@ -25,22 +25,19 @@ class LocationInfo(Base):
     __tablename__ = "LocationInfo"
     id = Column(Integer, primary_key=True, index=True)
     location = Column(String)
-    summary = Column(String)
+    description = Column(String)
     address = Column(String)
-    category = Column(String) # restaurant, bar, club, planned activity etc.
     reviews = relationship("ReviewData", back_populates="location")
     google_rating = Column(Integer) # avg
-    price_range = Column(Integer) 
-    description = Column(String)
+    price_range = Column(String) 
     outdoor = Column(Boolean) # whether outdoor seating/area is available
+    group_activity = Column(Boolean)
     vegetarian_options = Column(Boolean)
-    team_drinks = Column(Boolean)
+    drinks = Column(Boolean)
     food_available = Column(Boolean)
     accessible = Column(Boolean)
-    live_music = Column(Boolean)
     formal_attire = Column(Boolean)
     reservation_needed = Column(Boolean)
-    activity_type = Column(String)
 
 class ReviewData(Base):
     __tablename__ = "ReviewData"
@@ -55,10 +52,11 @@ class EventsInfo(Base):
     __tablename__ = "EventsInfo"
     id = Column(Integer, primary_key=True, index=True)
     event_name = Column(String)
-    attendees = relationship("EventUsers", back_populates="event")
     event_date = Column(String)
-    location = Column(String)
+    location = relationship("LocationInfo") # idk if this is gonna work
     description = Column(String)
+    attendees = relationship("EventUsers", back_populates="event")
+
 
 class EventUsers(Base):
     __tablename__ = "EventUsers"
