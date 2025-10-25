@@ -10,6 +10,7 @@ services:
       - POSTGRES_DB=nightout_recommender_db
       - POSTGRES_USER=db_user
       - POSTGRES_PASSWORD=db_pass
+    restart: unless-stopped
     networks:
       default:
         aliases:
