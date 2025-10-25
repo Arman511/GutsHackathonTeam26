@@ -32,7 +32,7 @@ def get_db():
         db.close()
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
+@router.post("/api/register", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
     """
     Creates a new user with a hashed password and stores it in the database.
@@ -91,7 +91,7 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
         )
 
 
-@router.post("/token", response_model=Token)
+@router.post("/api/token", response_model=Token)
 async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: db_dependency
 ):
