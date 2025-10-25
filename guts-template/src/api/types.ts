@@ -23,9 +23,9 @@ export type CreateLocationRequest = {
     price_range: string
     outdoor: boolean
     group_activity: boolean
-    vegetarian_options: boolean
+    vegetarian: boolean
     drinks: boolean
-    food_available: boolean
+    food: boolean
     accessible: boolean
     formal_attire: boolean
     reservation_needed: boolean
@@ -41,9 +41,9 @@ export type LocationSearchRequest = {
     price_range?: string | null
     outdoor?: boolean | null
     group_activity?: boolean | null
-    vegetarian_options?: boolean | null
+    vegetarian?: boolean | null
     drinks?: boolean | null
-    food_available?: boolean | null
+    food?: boolean | null
     accessible?: boolean | null
     formal_attire?: boolean | null
     reservation_needed?: boolean | null

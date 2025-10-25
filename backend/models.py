@@ -101,9 +101,9 @@ class LocationInfo(Base):
     address = Column(String)
     description = Column(String)
     reviews = relationship("ReviewData", back_populates="location")
-    google_rating = Column(Float) # avg
-    price_range = Column(String) 
-    outdoor = Column(Boolean) # whether outdoor seating/area is available
+    google_rating = Column(Float)  # avg
+    price_range = Column(String)
+    outdoor = Column(Boolean)  # whether outdoor seating/area is available
     group_activity = Column(Boolean)
     vegetarian = Column(Boolean)
     drinks = Column(Boolean)
