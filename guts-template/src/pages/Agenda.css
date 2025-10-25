@@ -1,0 +1,53 @@
+.agenda-container {
+    padding: 15px;
+    font-family: Arial, sans-serif;
+}
+
+.filters {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-button {
+    padding: 8px 15px;
+    border: 1px solid #e7e2e2;
+    border-radius: 12px;
+    cursor: pointer;
+    background-color: #ffffff;
+    transition: all 0.2s;
+}
+
+.filter-button.selected {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.events-container {
+    max-height: 500px;
+    overflow-y: auto;
+    border: 1px solid #f1f1f1;
+    border-radius: 12px;
+    padding: 10px;
+}
+
+.event-card {
+    border: 1px solid #888;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.event-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.event-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
