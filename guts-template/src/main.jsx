@@ -8,6 +8,16 @@ import Groups from "./pages/Groups";
 import Plan from "./pages/Plan";
 import "./index.css";
 
+let accessToken = null;
+
+export function setAccessToken(token) {
+    accessToken = token;
+}
+
+export function getAccessToken() {
+    return accessToken;
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <Router>

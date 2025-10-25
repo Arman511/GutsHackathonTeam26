@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String, Boolean
 from sqlalchemy.orm import mapped_column, relationship
 from backend.database import Base
 
+
 # own user table
 class Users(Base):
     __tablename__ = "Users"
@@ -10,15 +11,19 @@ class Users(Base):
     name = Column(String)
     username = Column(String, unique=True)
     hashed_password = Column(String)
+    events = relationship("EventUsers", back_populates="user")
+
 
 class CreateUserRequest(BaseModel):
     name: str
     username: str
     password: str
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 # own table for storing location information
 class LocationInfo(Base):
@@ -27,12 +32,12 @@ class LocationInfo(Base):
     location = Column(String)
     summary = Column(String)
     address = Column(String)
-    category = Column(String) # restaurant, bar, club, planned activity etc.
+    category = Column(String)  # restaurant, bar, club, planned activity etc.
     reviews = relationship("ReviewData", back_populates="location")
-    google_rating = Column(Integer) # avg
-    price_range = Column(Integer) 
+    google_rating = Column(Integer)  # avg
+    price_range = Column(Integer)
     description = Column(String)
-    outdoor = Column(Boolean) # whether outdoor seating/area is available
+    outdoor = Column(Boolean)  # whether outdoor seating/area is available
     vegetarian_options = Column(Boolean)
     team_drinks = Column(Boolean)
     food_available = Column(Boolean)
@@ -42,6 +47,7 @@ class LocationInfo(Base):
     reservation_needed = Column(Boolean)
     activity_type = Column(String)
 
+
 class ReviewData(Base):
     __tablename__ = "ReviewData"
     id = Column(Integer, primary_key=True, index=True)
@@ -49,6 +55,7 @@ class ReviewData(Base):
     user_review = Column(String)
     user_rating = Column(Integer)
     location = relationship("LocationInfo", back_populates="reviews")
+
 
 # own table for the different events that get made by event planner
 class EventsInfo(Base):
@@ -60,6 +67,7 @@ class EventsInfo(Base):
     location = Column(String)
     description = Column(String)
 
+
 class EventUsers(Base):
     __tablename__ = "EventUsers"
     id = Column(Integer, primary_key=True, index=True)
@@ -68,13 +76,10 @@ class EventUsers(Base):
     event = relationship("EventsInfo", back_populates="attendees")
     user = relationship("Users", back_populates="events")
 
+
 class UserRankings(Base):
     __tablename__ = "UserRankings"
     id = Column(Integer, primary_key=True, index=True)
     user_id = mapped_column(ForeignKey("Users.id"))
     location_id = mapped_column(ForeignKey("LocationInfo.id"))
     ranking = Column(Integer)
-
-
-
-
