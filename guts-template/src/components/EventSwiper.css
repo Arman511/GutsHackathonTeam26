@@ -1,0 +1,131 @@
+/* src/components/EventSwiper.css */
+
+/* Dark overlay covering the screen */
+.swiper-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4%;
+    border: none;
+    background: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Progress indicator */
+.progress {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 16px;
+    border-radius: 20px;
+}
+
+/* Main card */
+.card {
+    width: 90%;
+    max-width: 500px;
+    height: 85vh;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* Scrollable content area */
+.card-content {
+    flex: 1;
+    overflow-y: scroll;
+    padding: 20px;
+}
+
+/* Event images */
+.event-image {
+    height: 300px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.event-image.secondary {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+/* Info box */
+.info-box {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 15px 0;
+}
+
+.info-box p {
+    margin: 5px 0;
+}
+
+/* Review box */
+.review-box {
+    background: #f0f8ff;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 4px solid #007bff;
+    margin: 10px 0 20px 0;
+}
+
+.review-box p {
+    font-style: italic;
+    color: #555;
+}
+
+/* Rating section fixed at bottom */
+.rating-section {
+    padding: 20px;
+    border-top: 2px solid #f0f0f0;
+    text-align: center;
+}
+
+.rating-section p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Back button */
+.back-btn {
+    position: absolute;
+    bottom: 50px;
+    left: 20px;
+    padding: 10px 20px;
+    border: 2px solid #007bff;
+    border-radius: 25px;
+    background: white;
+    color: #007bff;
+    font-weight: bold;
+    cursor: pointer;
+}
