@@ -58,7 +58,7 @@ async def get_event(event_id: int, user: user_dependency, db: db_dependency):
     return {"event": formatted_event}
 
 
-@event_router.get("/all_events_details/{event_id}", status_code=status.HTTP_200_OK)
+@event_router.get("/all_event_details/{event_id}", status_code=status.HTTP_200_OK)
 async def get_event_details(event_id: int, user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
