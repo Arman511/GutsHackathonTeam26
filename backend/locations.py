@@ -362,6 +362,7 @@ def delete_location(location_id: int, user: user_dependency, db: db_dependency):
         text('DELETE FROM "ReviewData" WHERE location_id = :location_id'),
         {"location_id": location_id},
     )
+    db.commit()
     # delete location
     db.execute(
         text('DELETE FROM "LocationInfo" WHERE id = :location_id'),
