@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Card } from '@mui/material';
 import { getLocationsForEvent, rankLocation } from "../api/api";
 import EventSwiper from "./EventSwiper";
-import BackgroundWrapper from "/Users/lemartokham/hack/GutsHackathonTeam26/guts-template/src/pages/react-bits/BackgroundWrapper";
+import BackgroundWrapper from "../pages/react-bits/BackgroundWrapper";
 
 export default function RateEvent() {
     const { eventId } = useParams()

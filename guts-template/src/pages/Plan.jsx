@@ -161,7 +161,6 @@ export default function Plan() {
                                 padding: "6px"
                             }}
                         >
-                            {/* Render participant bubbles inside the input container */}
                             {participants.map((p) => (
                                 <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
                             ))}
@@ -179,7 +178,6 @@ export default function Plan() {
                                 }}
                             />
                         </div>
-                        {/* Matching users as clickable bubbles */}
                         {participantInput.trim() && (
                             <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
                                 <label>Matching Users:</label>
