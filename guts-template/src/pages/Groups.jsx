@@ -10,16 +10,31 @@ import BackgroundWrapper from "./react-bits/BackgroundWrapper";
 
 export default function Groups() {
     const navigate = useNavigate()
-    const [myEvents, setMyEvents] = useState([])
+    const [myEvents, setMyEvents] = useState({})
     const [loading, setLoading] = useState(true)
 
     useEffect(()=> {
         const loadEvents = async () => {
             try {
-                const events  = await getAttendingEvents()
+                const response  = await getAttendingEvents()
+                console.log(response)
+
+                let events = response
+                
+                if (response && response.events) {
+                    events = response.events
+                }
+
+                if (!Array.isArray(events)){
+                    events = []
+                }
+
                 setMyEvents(events)
+
+
             } catch (error) {
                 console.log("Error", error)
+                setMyEvents([])
             } finally {
             setLoading(false)
         }

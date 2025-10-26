@@ -73,12 +73,19 @@ export default function Plan() {
 
         try {
             const eventData = {
-                event_name: `Tea Event - ${date}`, // maybe add a name section?
+                event_name: `Team Event - ${date}`,
                 event_date: date,
                 description: `Event with ${participants.join(', ')}. Preferences: ${preferences.join(', ')}`,
                 price_range: priceRange,
                 outdoor: preferences.includes("Outdoor"),
-                participant_ids: []
+                group_activity: true, // Always true for team events
+                vegetarian: preferences.includes("Vegetarian Friendly"),
+                drinks: preferences.includes("Drinks"),
+                food: preferences.includes("Food Included"),
+                accessible: disabilityAccess,
+                formal_attire: false, // Default to false
+                open_time: time, // Use the time from form
+                close_time: "23:59" // Default end time
             }
             await createEvent(eventData)
 
@@ -86,7 +93,7 @@ export default function Plan() {
             alert("Event planned successfully! Redirecting to home...");
             navigate("/home");
         } catch (error) {
-            alert("omething went wrong, please try again!!")
+            alert("something went wrong, please try again!!")
             console.log(error)
         }
 
