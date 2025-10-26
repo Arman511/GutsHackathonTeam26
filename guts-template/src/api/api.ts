@@ -11,6 +11,9 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
         const text = await res.text()
         if (res.status === 401) {
             localStorage.removeItem("access_token");
+            if (path === "/api/auth/token") {
+                throw new Error("Unauthorized");
+            }
             window.location.href = "/login";
         }
         console.error('API request failed:', { path, status: res.status, statusText: res.statusText, body: text })
@@ -23,7 +26,7 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
 async function loggedInRequest(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) {
-        throw new Error('No access token found, user is not logged in')
+        window.location.href = "/login";
     }
     const headers = {
         'Authorization': `bearer ${accessToken}`,

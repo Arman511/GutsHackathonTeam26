@@ -1,14 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
-import { createEvent } from "../api/api";
-
-const Bubble = React.memo(({ name, onRemove }) => (
-    <span className="bubble" onClick={() => onRemove(name)}>
-    {name} ✕
-  </span>
-));
+import { getUsers } from "../api/api";
 
 export default function Plan() {
     const navigate = useNavigate();
@@ -19,27 +13,58 @@ export default function Plan() {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [preferences, setPreferences] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    const [suggestedUsers, setSuggestedUsers] = useState([]);
 
     const allPreferences = [
         "Outdoor",
         "Indoor",
         "Quiet",
+        "Group Activity",
         "Lively",
         "Food Included",
         "Drinks",
         "Vegetarian Friendly",
         "Pet Friendly",
-        "Adventure",
-        "Alcohol-free"
+        "Formal Attire",
     ];
 
-    const handleAddParticipant = (e) => {
-        e.preventDefault();
-        const trimmed = participantInput.trim();
-        if (trimmed && !participants.includes(trimmed)) {
-            setParticipants([...participants, trimmed]);
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await getUsers();
+                setAllUsers(response.users);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    useEffect(() => {
+        // Update suggestions as user types
+        if (participantInput.trim() === "") {
+            setSuggestedUsers([]);
+        } else {
+            setSuggestedUsers(
+                allUsers.filter(
+                    user =>
+                        user.username
+                            .toLowerCase()
+                            .includes(participantInput.trim().toLowerCase()) &&
+                        !participants.includes(user.username)
+                )
+            );
+        }
+    }, [participantInput, allUsers, participants]);
+
+    const handleAddParticipant = (name) => {
+        if (name && !participants.includes(name)) {
+            setParticipants([...participants, name]);
         }
         setParticipantInput("");
+        setSuggestedUsers([]);
     };
 
     const handleRemoveParticipant = (name) => {
@@ -54,17 +79,17 @@ export default function Plan() {
         );
     };
 
-    const handleSubmit = async  (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Checking for input
         if (!participantInput.length) {
             alert("Please add at least one person")
-            return 
+            return
         }
         if (!priceRange) {
             alert("Please add price range!!!!")
-            return 
+            return
         }
         if (!date) {
             alert("DATEEEEE")
@@ -106,19 +131,26 @@ export default function Plan() {
             <div className="plan-container">
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
-                    {/* Participants Input */}
                     <div className="form-group">
                         <label>Participants:</label>
                         <div className="participant-input-container">
                             <input
                                 type="text"
-                                placeholder="Type a name and press Enter"
+                                placeholder="Type a username"
                                 value={participantInput}
                                 onChange={(e) => setParticipantInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddParticipant(e);
-                                }}
                             />
+                        </div>
+                        <div className="suggested-bubbles">
+                            {suggestedUsers.map(user => (
+                                <span
+                                    key={user.id}
+                                    className="bubble suggested"
+                                    onClick={() => handleAddParticipant(user.username)}
+                                >
+                                    {user.username}
+                                </span>
+                            ))}
                         </div>
                         <div className="participant-bubbles">
                             {participants.map((p) => (
@@ -126,8 +158,6 @@ export default function Plan() {
                             ))}
                         </div>
                     </div>
-
-                    {/* Price Range */}
                     <div className="form-group">
                         <label>Price Range:</label>
                         <div className="price-buttons">
@@ -144,7 +174,6 @@ export default function Plan() {
                         </div>
                     </div>
 
-                    {/* Disability Access */}
                     <div className="form-group checkbox">
                         <label>
                             <input
@@ -156,7 +185,6 @@ export default function Plan() {
                         </label>
                     </div>
 
-                    {/* Date and Time */}
                     <div className="form-group">
                         <label>Date:</label>
                         <input
@@ -177,7 +205,6 @@ export default function Plan() {
                         />
                     </div>
 
-                    {/* Preferences */}
                     <div className="form-group">
                         <label>Preferences:</label>
                         <div className="preferences-container">
