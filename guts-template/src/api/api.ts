@@ -62,15 +62,19 @@ export async function createEvent(data: CreateEventRequest) {
 }
 
 export async function addLocation(data: CreateLocationRequest) {
-    return loggedInRequest('/api/locations/add_location', { method: 'POST', body: JSON.stringify(data) })
+    return loggedInRequest('/api/locations/add_location', { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
 }
 
 export async function searchLocations(query: LocationSearchRequest) {
-    return loggedInRequest(`/api/locations/location_search`, { method: 'POST', body: JSON.stringify(query) })
+    return loggedInRequest(`/api/locations/location_search`, { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify(query) })
 }
 
 export async function rankLocation(data: LocationRankingRequest) {
-    return loggedInRequest('/api/locations/user_location_rank', { method: 'POST', body: JSON.stringify(data) })
+    return loggedInRequest('/api/locations/user_location_rank', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    })
 }
 
 export async function getAllLocations() {
@@ -118,7 +122,7 @@ export async function getKeyword(keywordId: number) {
 }
 
 export async function createKeyword(data: CreateKeywordRequest) {
-    return loggedInRequest('/api/keywords/create_keyword', { method: 'POST', body: JSON.stringify(data) })
+    return loggedInRequest('/api/keywords/create_keyword', { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
 }
 
 export async function getUsers() {
@@ -130,9 +134,9 @@ export async function healthCheck() {
 }
 
 export async function attendEvent(event_id: number, user_id: AttendEventRequest) {
-    return loggedInRequest(`/api/events/attend_event/${event_id}`, { method: 'POST', body: JSON.stringify(user_id) })
+    return loggedInRequest(`/api/events/attend_event/${event_id}`, { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify(user_id) })
 }
 
 export async function addUsersToEvent(event_id: number, user_ids: AddUsersToEventRequest) {
-    return loggedInRequest(`/api/events/add_users_to_event/${event_id}`, { method: 'POST', body: JSON.stringify(user_ids) })
+    return loggedInRequest(`/api/events/add_users_to_event/${event_id}`, { method: 'POST', headers: { "Content-Type": "application/json" }, body: JSON.stringify(user_ids) })
 }
