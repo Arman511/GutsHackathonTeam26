@@ -13,14 +13,14 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await login({ username: email, password });
+        const response = await login({ username: username, password });
 
         if (response?.access_token) {
             setAccessToken(response.access_token);
             localStorage.setItem("access_token", response.access_token);
             navigate("/home");
         } else {
-            alert("Invalid email or password");
+            alert("Invalid username or password");
         }
     };
 
@@ -39,10 +39,6 @@ export default function Login() {
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
                     <button type="submit">Login</button>
                 </form>
-
-                <button className="skip-button" onClick={handleSkip}>
-                    Skip to Home
-                </button>
             </div>
         </div>
     );

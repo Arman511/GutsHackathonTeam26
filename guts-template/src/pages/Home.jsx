@@ -1,88 +1,168 @@
-import { Link } from "react-router-dom";
-import SplitText from "./react-bits/SplitText";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Container, Grid, Card, CardContent, Typography, Button, Box, Alert } from '@mui/material';
+import GroupsIcon from '@mui/icons-material/Groups';
+import EventIcon from '@mui/icons-material/Event';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PsychologyIcon from '@mui/icons-material/Psychology';
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
-import EventSwiper from "../components/EventSwiper";
-import { useState } from "react";
-
-const mockEvents = [
-    {
-        id: 1,
-        title: "Team Drinks",
-        date: "2025-10-28",
-        time: "7:00 PM",
-        group: "Marketing",
-        details: "Join us for after-work drinks at the local pub!",
-        image: "🍺",
-        secondaryImage: "🎉",
-        review: "Last time was amazing! Can't wait for round 2."
-    },
-    {
-        id: 2,
-        title: "SubCrawl",
-        date: "2025-10-30",
-        time: "6:00 PM",
-        group: "LaserTag",
-        details: "Epic subway crawl through the city.",
-        image: "🚇",
-        secondaryImage: "🎊",
-        review: "Always a wild time with this crew!"
-    },
-    {
-        id: 3,
-        title: "Halloween Party",
-        date: "2025-11-05",
-        time: "8:00 PM",
-        group: "HR",
-        details: "Costumes required!",
-        image: "🎃",
-        secondaryImage: "👻",
-        review: "Best Halloween idea ever!"
-    }
-];
+import { getMe } from "../api/api";
+import PersonalityQuiz from "../components/PersonalityQuiz";
 
 export default function Home() {
-    const [showSwiper, setShowSwiper] = useState(0)
+    const navigate = useNavigate()
+    const [currentUser, setCurrentUser] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [showQuiz, setShowQuiz] = useState(false)
+
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                const user = await getMe()
+                setCurrentUser(user)
+            } catch (error) {
+                console.log(error)
+            } finally {
+                setLoading(false)
+            }
+        }
+        loadUser()
+    }, [navigate])
+
+    const handleQuizComplete = (topTags) => {
+        console.log("Users personality boiled down to: ", topTags)
+
+        // Save to storage in browswer
+        localStorage.setItem('personality_tags', JSON.stringify(topTags))
+        
+        alert("Personality quiz complete! Well use these to recommend better activites for you.")
+        setShowQuiz(false)
+    }
+
+    if (loading) {
+        return (
+            <BackgroundWrapper>
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                    <Typography variant="h4" color="white">Loading...</Typography>
+                </Box>
+            </BackgroundWrapper>
+        )
+    }
+
+        const cards = [
+        {
+            title: 'My Groups',
+            description: 'View event invites & rate activities',
+            icon: <GroupsIcon sx={{ fontSize: 80 }} />,
+            path: '/groups'
+        },
+        {
+            title: 'Plan Event',
+            description: 'Create event & invite team',
+            icon: <EventIcon sx={{ fontSize: 80 }} />,
+            path: '/plan'
+        },
+        {
+            title: 'Dashboard',
+            description: 'View event results & rankings',
+            icon: <DashboardIcon sx={{ fontSize: 80 }} />,
+            path: '/agenda'
+        }
+    ];
+
     return (
         <BackgroundWrapper>
-            <div className="home-container">
-                <header>
-                    <SplitText
-                        text="Welcome SAS Employees!"
-                        className="text-3xl font-bold text-center"
-                        delay={0.1}
-                        style={{ color: 'white' }}
-                    />
-                </header>
-                <nav className="button-group" style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    padding: '10px',
-                    backgroundColor: '#f0f0f0',
-                    borderBottom: '2px solid #ccc',
-                    marginBottom: '20px',
-                    gap: '20px'
-                    }}>
-                    <Link to="/Groups" className="btn">Groups</Link>
-                    <Link to="/Agenda" className="btn">Agenda</Link>
-                    <Link to="/Plan" className="btn">Plan</Link>
-                </nav>
-            </div>
-             <button
-            onClick={()=> setShowSwiper(true)}>
-                Rate Events
-            </button>
+            <Container maxWidth="lg" sx={{ py: 5 }}>
+                <Box textAlign="center" mb={6}>
+                    <Typography variant="h2" color="white" gutterBottom fontWeight="bold">
+                        Welcome, {currentUser?.name || 'Employee'}!
+                    </Typography>
+                    <Typography variant="h5" color="white" sx={{ opacity: 0.9 }}>
+                        SAS Team Event Platform
+                    </Typography>
+                </Box>
 
-            {showSwiper && (
-                <EventSwiper
-                events={mockEvents}
-                onClose={() => setShowSwiper(false)}
-                onRatingComplete={() => {
-                    alert("All done!")
-                    setShowSwiper(false)
-                }}
-                />
-            )}
-            </BackgroundWrapper>
+                <Alert 
+                    severity="info" 
+                    icon={<PsychologyIcon fontSize="large" />}
+                    sx={{ 
+                        mb: 4, 
+                        fontSize: '1.1em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    <Box>
+                        <Typography variant="h6" gutterBottom>
+                            Let's learn more about what you like!
+                        </Typography>
+                        <Typography variant="body1">
+                            Take our personality quiz to get better activity recommendations
+                        </Typography>
+                    </Box>
+                    <Button 
+                        variant="contained" 
+                        size="large"
+                        onClick={() => setShowQuiz(true)}
+                        sx={{ ml: 2 }}
+                    >
+                        Take Quiz
+                    </Button>
+                </Alert>
+
+                <Grid container spacing={3} mb={4}>
+                    {cards.map((card) => (
+                        <Grid item xs={12} md={4} key={card.title}>
+                            <Link to={card.path} style={{ textDecoration: 'none' }}>
+                                <Card 
+                                    sx={{ 
+                                        height: '100%',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s',
+                                        '&:hover': {
+                                            transform: 'translateY(-8px)',
+                                            boxShadow: 6
+                                        }
+                                    }}
+                                >
+                                    <CardContent sx={{ textAlign: 'center', py: 5 }}>
+                                        <Box color="primary.main" mb={2}>
+                                            {card.icon}
+                                        </Box>
+                                        <Typography variant="h5" gutterBottom fontWeight="bold">
+                                            {card.title}
+                                        </Typography>
+                                        <Typography variant="body1" color="text.secondary">
+                                            {card.description}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                <Box textAlign="center">
+                    <Button
+                        variant="outlined"
+                        color="inherit"
+                        size="large"
+                        onClick={() => {
+                            localStorage.removeItem('access_token');
+                            navigate('/');
+                        }}
+                        sx={{ color: 'white', borderColor: 'white' }}
+                    >
+                        Logout
+                    </Button>
+                </Box>
+
+                {showQuiz && (
+                    <PersonalityQuiz onComplete={handleQuizComplete} />
+                )}
+            </Container>
+        </BackgroundWrapper>
 
     );
 }

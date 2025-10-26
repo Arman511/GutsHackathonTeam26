@@ -79,21 +79,42 @@ export default function Plan() {
         );
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const jsonData = {
-            participants,
-            priceRange,
-            disabilityAccess,
-            date,
-            time,
-            preferences
-        };
+        // Checking for input
+        if (!participantInput.length) {
+            alert("Please add at least one person")
+            return
+        }
+        if (!priceRange) {
+            alert("Please add price range!!!!")
+            return
+        }
+        if (!date) {
+            alert("DATEEEEE")
+            return
+        }
 
-        console.log("Event JSON:", JSON.stringify(jsonData, null, 2));
-        alert("Event planned successfully! Redirecting to home...");
-        navigate("/home");
+        try {
+            const eventData = {
+                event_name: `Tea Event - ${date}`, // maybe add a name section?
+                event_date: date,
+                description: `Event with ${participants.join(', ')}. Preferences: ${preferences.join(', ')}`,
+                price_range: priceRange,
+                outdoor: preferences.includes("Outdoor"),
+                participant_ids: []
+            }
+            await createEvent(eventData)
+
+            console.log("Event JSON:", JSON.stringify(eventData, null, 2));
+            alert("Event planned successfully! Redirecting to home...");
+            navigate("/home");
+        } catch (error) {
+            alert("omething went wrong, please try again!!")
+            console.log(error)
+        }
+
     };
 
 

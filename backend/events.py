@@ -35,7 +35,6 @@ async def get_all_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -60,7 +59,6 @@ async def get_event(event_id: int, user: user_dependency, db: db_dependency):
         "id": event.id,
         "event_name": event.event_name,
         "event_date": event.event_date,
-        "location": event.location,
         "description": event.description,
     }
     return {"event": formatted_event}
@@ -84,7 +82,6 @@ async def get_event_details(event_id: int, user: user_dependency, db: db_depende
         "id": event.id,
         "event_name": event.event_name,
         "event_date": event.event_date,
-        "location": event.location,
         "description": event.description,
         "price_range": event.price_range,
         "outdoor": event.outdoor,
@@ -124,7 +121,6 @@ async def get_attending_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -153,7 +149,6 @@ async def get_created_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -171,7 +166,6 @@ async def create_event(
         user_id=user_id,
         event_name=event_data.event_name,
         event_date=event_data.event_date,
-        location=event_data.location,
         description=event_data.description,
         price_range=event_data.price_range,
         outdoor=event_data.outdoor,
@@ -305,3 +299,36 @@ async def remove_user_from_event(
     )
     db.commit()
     return {"message": "User removed from event successfully"}
+
+
+@event_router.get("/delete_event/{event_id}", status_code=status.HTTP_200_OK)
+async def delete_event(
+    event_id: int,
+    user: user_dependency,
+    db: db_dependency,
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    # check if event exists
+    validate_event_id = db.execute(
+        text('SELECT id FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    ).fetchone()
+    if not validate_event_id:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # delete event users
+    db.execute(
+        text('DELETE FROM "EventUsers" WHERE event_id = :event_id'),
+        {"event_id": event_id},
+    )
+    db.commit()
+
+    # delete event
+    db.execute(
+        text('DELETE FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    )
+    db.commit()
+    return {"message": "Event deleted successfully"}

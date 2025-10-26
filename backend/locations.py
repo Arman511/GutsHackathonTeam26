@@ -36,23 +36,23 @@ def build_location_filters(filters: dict):
         if value is None:
             continue
 
-        if field == "keywords":
-            # keywords stored separately; build EXISTS subquery matching any keyword
-            if isinstance(value, (list, tuple)) and value:
-                keyword_preds = []
-                for idx, keyword in enumerate(value):
-                    key = f"keyword_{idx}"
-                    keyword_preds.append(f"k.keyword ILIKE :{key}")
-                    params[key] = f"%{keyword}%"
-                exists_sub = (
-                    'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
-                    'JOIN "Keywords" k ON k.id = lk.keyword_id '
-                    'WHERE lk.location_id = "LocationInfo".id AND ('
-                    + " OR ".join(keyword_preds)
-                    + "))"
-                )
-                conditions.append(exists_sub)
-            continue
+        # if field == "keywords":
+        #     # keywords stored separately; build EXISTS subquery matching any keyword
+        #     if isinstance(value, (list, tuple)) and value:
+        #         keyword_preds = []
+        #         for idx, keyword in enumerate(value):
+        #             key = f"keyword_{idx}"
+        #             keyword_preds.append(f"k.keyword ILIKE :{key}")
+        #             params[key] = f"%{keyword}%"
+        #         exists_sub = (
+        #             'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
+        #             'JOIN "Keywords" k ON k.id = lk.keyword_id '
+        #             'WHERE lk.location_id = "LocationInfo".id AND ('
+        #             + " OR ".join(keyword_preds)
+        #             + "))"
+        #         )
+        #         conditions.append(exists_sub)
+        #     continue
 
         if field in ["location", "description", "address"]:
             conditions.append(f"{field} ILIKE :{field}")
@@ -206,7 +206,7 @@ async def add_location(
     return {"detail": "Location added successfully"}
 
 
-@location_router.get("/location_search", status_code=status.HTTP_200_OK)
+@location_router.post("/location_search", status_code=status.HTTP_200_OK)
 async def search_locations(
     query: LocationSearchRequest, user: user_dependency, db: db_dependency
 ):
@@ -343,3 +343,40 @@ def add_google_reviews_to_location(review: AddReviewRequest, db: db_dependency):
     db.add(entry)
     db.commit()
     return {"detail": "Review added successfully"}
+
+
+@location_router.get("/delete_location/{location_id}", status_code=status.HTTP_200_OK)
+def delete_location(location_id: int, user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    # check if location exists
+    validate_location_id = db.execute(
+        text('SELECT id FROM "LocationInfo" WHERE id = :location_id'),
+        {"location_id": location_id},
+    ).fetchone()
+    if not validate_location_id:
+        raise HTTPException(status_code=404, detail="Location not found")
+
+    db.execute(
+        text('DELETE FROM "ReviewData" WHERE location_id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
+    db.execute(
+        text('DELETE FROM "UserRankings" WHERE location_id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
+    db.execute(
+        text('DELETE FROM "LocationKeywords" WHERE location_id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
+    # delete location
+    db.execute(
+        text('DELETE FROM "LocationInfo" WHERE id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
+    return {"message": "Location deleted successfully"}

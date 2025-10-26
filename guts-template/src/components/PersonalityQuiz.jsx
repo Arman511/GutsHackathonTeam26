@@ -27,7 +27,7 @@ const quizQuestions = [
     },
     {
         id: 3,
-        question: "What’s your dream job?",
+        question: "What's your dream job?",
         options: [
             { text: "Inventor", tags: ["optimistic", "renewal", "growth"] },
             { text: "Athlete", tags: ["energetic", "social", "adventurous"] },
@@ -38,7 +38,7 @@ const quizQuestions = [
     },
     {
         id: 4,
-        question: "Which city’s vibe is closest to your own?",
+        question: "Which city's vibe is closest to your own?",
         options: [
             { text: "Tokyo", tags: ["positive", "cringe", "wholesome"] },
             { text: "DC", tags: ["chill", "easygoing", "avoidant"] },
@@ -100,16 +100,20 @@ function PersonalityQuiz({ onComplete }) {
     }
 
     const finishQuiz = () => {
+
+        // A way tocount how many times a tag appears
         const tagCounts = {}
         selectedTags.forEach(tag => {
             tagCounts[tag] = (tagCounts[tag] || 0) + 1
         })
 
-        const topTags = Object.entries(tagCounts).sort((a,b) => b[1] - a[1]).slice(0,5).map(entry => entry[0])
 
-        console.log("users aura: ", topTags)
+        const topTags = Object.entries(tagCounts) // Creates key value pairs
+            .sort((a, b) => b[1] - a[1]) // Sorts in Descnding order: if diff is positive, b is higher, else a is higher
+            .slice(0, 5) // Returns top 5
+            .map(entry => entry[0]) // Returns tags only
 
-        // save to backend somehow
+        console.log("User's personality tags:", topTags)
 
         onComplete(topTags)
     }
