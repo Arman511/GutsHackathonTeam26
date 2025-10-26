@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
-import { getUsers } from "../api/api";
-import { createEvent, addUsersToEvent } from "../api/api"; // adjust path if needed
+import { getUsers, createEvent, addUsersToEvent} from "../api/api";
 
 function Bubble({ name, onRemove }) {
     return (
@@ -62,7 +61,6 @@ export default function Plan() {
     }, []);
 
     useEffect(() => {
-        // Update suggestions as user types
         if (participantInput.trim() === "") {
             setSuggestedUsers([]);
         } else {
@@ -102,7 +100,6 @@ export default function Plan() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Map participant usernames to user IDs
         const participantIds = participants
             .map(username => {
                 const user = allUsers.find(u => u.username === username);
@@ -110,7 +107,6 @@ export default function Plan() {
             })
             .filter(id => id !== null);
 
-        // Prepare event data
         const eventData = {
             event_name: eventName,
             event_date: String(date),
@@ -141,7 +137,7 @@ export default function Plan() {
             alert("Error: " + err.message);
         }
     };
-    
+
     console.log("eventName:", eventName);
     console.log("description:", description);
     console.log("eventData:", eventData);
@@ -186,7 +182,6 @@ export default function Plan() {
                                 padding: "6px"
                             }}
                         >
-                            {/* Render participant bubbles inside the input container */}
                             {participants.map((p) => (
                                 <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
                             ))}
@@ -204,7 +199,6 @@ export default function Plan() {
                                 }}
                             />
                         </div>
-                        {/* Matching users as clickable bubbles */}
                         {participantInput.trim() && (
                             <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
                                 <label>Matching Users:</label>
