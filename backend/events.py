@@ -238,12 +238,14 @@ async def add_users_to_event(
         if not validate_user_id:
             continue  # Skip invalid user IDs
 
-        db.execute(
-            text('DELETE FROM "EventUsers" WHERE event_id = :event_id'),
-            {"event_id": event_id},
-        )
-        db.commit()
-
+        already_added = db.execute(
+            text(
+                'SELECT * FROM "EventUsers" WHERE user_id = :user_id AND event_id = :event_id'
+            ),
+            {"user_id": user_id, "event_id": event_id},
+        ).fetchone()
+        if already_added:
+            continue
         db.execute(
             text(
                 'INSERT INTO "EventUsers" (user_id, event_id) VALUES (:user_id, :event_id)'
