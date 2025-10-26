@@ -5,7 +5,6 @@ import "./Plan.css";
 import { getUsers } from "../api/api";
 import { createEvent, addUsersToEvent } from "../api/api"; // adjust path if needed
 
-// Add this above your Plan component or import it if you already have it
 function Bubble({ name, onRemove }) {
     return (
         <span className="bubble">
@@ -205,16 +204,16 @@ export default function Plan() {
                         </div>
                         {/* Matching users as clickable bubbles */}
                         {participantInput.trim() && (
-                        <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
-                            <label>Matching Users:</label>
-                            <div>
-                                {allUsers
-                                    .filter(user =>
-                                        user.username
-                                            .toLowerCase()
-                                            .includes(participantInput.trim().toLowerCase()) &&
-                                        !participants.includes(user.username)
-                                    ).length === 0 ? (
+                            <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
+                                <label>Matching Users:</label>
+                                <div>
+                                    {allUsers
+                                        .filter(user =>
+                                            user.username
+                                                .toLowerCase()
+                                                .includes(participantInput.trim().toLowerCase()) &&
+                                            !participants.includes(user.username)
+                                        ).length === 0 ? (
                                         <span style={{ color: "#888", fontStyle: "italic" }}>none</span>
                                     ) : (
                                         allUsers
@@ -234,11 +233,11 @@ export default function Plan() {
                                                 </span>
                                             ))
                                     )
-                                }
+                                    }
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
                     <div className="form-group">
                         <label>Price Range:</label>
                         <div className="price-buttons">

@@ -77,13 +77,13 @@ def build_location_filters(filters: dict):
             continue
 
         if field in ["open_time", "close_time"]:
-            # assume "HH:MM" string format; lexical compare works for zero-padded times
-            if field == "open_time":
-                conditions.append(f"open_time <= :open_time")
-                params["open_time"] = value
-            else:
-                conditions.append(f"close_time >= :close_time")
-                params["close_time"] = value
+            #     # assume "HH:MM" string format; lexical compare works for zero-padded times
+            # if field == "open_time":
+            #     conditions.append(f"open_time <= :open_time")
+            #     params["open_time"] = value
+            # else:
+            #     conditions.append(f"close_time >= :close_time")
+            #     params["close_time"] = value
             continue
 
         if field == "google_rating":
@@ -330,7 +330,30 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         raise HTTPException(
             status_code=404, detail="No locations found matching event criteria"
         )
-    return {"locations": locations}
+    formatted_locations = []
+    for location in locations:
+        formatted_locations.append(
+            {
+                "id": location.id,
+                "location": location.location,
+                "description": location.description,
+                "open_time": location.open_time,
+                "close_time": location.close_time,
+                "address": location.address,
+                "google_rating": location.google_rating,
+                "price_range": location.price_range,
+                "outdoor": location.outdoor,
+                "group_activity": location.group_activity,
+                "vegetarian": location.vegetarian,
+                "drinks": location.drinks,
+                "food": location.food,
+                "accessible": location.accessible,
+                "formal_attire": location.formal_attire,
+                "reservation_needed": location.reservation_needed,
+                "image_url": location.image_url,
+            }
+        )
+    return {"locations": formatted_locations}
 
 
 @location_router.post("/add_google_reviews", status_code=status.HTTP_200_OK)
