@@ -141,6 +141,10 @@ export default function Plan() {
             alert("Error: " + err.message);
         }
     };
+    
+    console.log("eventName:", eventName);
+    console.log("description:", description);
+    console.log("eventData:", eventData);
 
     return (
         <BackgroundWrapper>
