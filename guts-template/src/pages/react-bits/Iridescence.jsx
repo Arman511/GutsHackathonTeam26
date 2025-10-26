@@ -1,3 +1,6 @@
+
+/*// React bits library imports are in this folder this is form a library*/
+
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 import './Iridescence.css';

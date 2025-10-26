@@ -1,6 +1,7 @@
 import React from 'react';
 import Iridescence from './Iridescence';
 import './BackgroundWrapper.css';
+/*// React bits library imports are in this folder this is form a library*/
 
 export default function BackgroundWrapper({ children }) {
     return (

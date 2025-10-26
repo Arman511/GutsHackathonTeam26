@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
 import './DomeGallery.css';
 
+/*// React bits library imports are in this folder this is form a library*/
+
+
 const DEFAULT_IMAGES = [
     'https://www.sas.com/en_gb/careers/sas-scotland-r-and-d/location/_jcr_content/par/styledcontainer_42de/image.img.jpg/1509619621665.jpg',
     'https://www.sas.com/en_gb/careers/sas-scotland-r-and-d/awards/_jcr_content/par/styledcontainer/par/image.img.png/1559058869940.png',
