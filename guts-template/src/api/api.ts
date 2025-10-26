@@ -9,6 +9,10 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
     })
     if (!res.ok) {
         const text = await res.text()
+        if (res.status === 401) {
+            localStorage.removeItem("access_token");
+            window.location.href = "/login";
+        }
         console.error('API request failed:', { path, status: res.status, statusText: res.statusText, body: text })
         throw new Error(`API ${res.status} ${res.statusText}: ${text}`)
     }
@@ -22,7 +26,7 @@ async function loggedInRequest(path: string, opts: RequestInit = {}, content_typ
         throw new Error('No access token found, user is not logged in')
     }
     const headers = {
-        'Authorization': `Bearer ${accessToken}`,
+        'Authorization': `bearer ${accessToken}`,
         ...(opts.headers || {}),
     }
     return request(path, { ...opts, headers }, content_type)
@@ -40,7 +44,7 @@ export async function register(data: RegisterRequest) {
 }
 
 export async function getMe() {
-    return loggedInRequest('/api/users/me', { method: 'GET' })
+    return loggedInRequest('/api/auth/me', { method: 'GET' })
 }
 
 //login pass in user and password returns session token and access toekn ignore token type its always beer

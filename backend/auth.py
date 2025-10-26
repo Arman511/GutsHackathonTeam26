@@ -4,7 +4,7 @@ from typing import Annotated
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import JWTError, jwt
+from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from sqlalchemy.util import deprecated
@@ -109,8 +109,13 @@ def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
             )
 
         return {"username": username, "name": name, "id": user_id}
-
-    except JWTError:
+    except ExpiredSignatureError:
+        print("JWT token has expired")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired"
+        )
+    except JWTError as e:
+        print("Error decoding JWT:", e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user"
         )
@@ -142,8 +147,11 @@ async def login_for_access_token(
     return {"access_token": token, "token_type": "bearer"}
 
 
+user_dependency = Annotated[dict, Depends(get_current_user)]
+
+
 @auth_router.get("/me", status_code=status.HTTP_200_OK)
-async def get_me(user: Annotated[dict, Depends(get_current_user)]):
+async def get_me(user: user_dependency):
     """
     Retrieves the current authenticated user's details.
     """
