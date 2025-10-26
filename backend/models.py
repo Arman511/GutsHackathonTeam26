@@ -82,6 +82,8 @@ class LocationRankingRequest(BaseModel):
     location_id: int
     ranking: int
 
+class AddUserToEventRequest(BaseModel):
+    user_id: int
 
 class CreateKeywordRequest(BaseModel):
     keyword: str
