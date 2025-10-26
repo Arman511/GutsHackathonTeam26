@@ -363,6 +363,16 @@ def delete_location(location_id: int, user: user_dependency, db: db_dependency):
         {"location_id": location_id},
     )
     db.commit()
+    db.execute(
+        text('DELETE FROM "UserRankings" WHERE location_id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
+    db.execute(
+        text('DELETE FROM "LocationKeywords" WHERE location_id = :location_id'),
+        {"location_id": location_id},
+    )
+    db.commit()
     # delete location
     db.execute(
         text('DELETE FROM "LocationInfo" WHERE id = :location_id'),
