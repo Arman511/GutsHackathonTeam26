@@ -1,10 +1,17 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
 import { createEvent } from "../api/api";
 
+const Bubble = React.memo(({ name, onRemove }) => (
+    <span className="bubble" onClick={() => onRemove(name)}>
+    {name} ✕
+  </span>
+));
+
 export default function Plan() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [participants, setParticipants] = useState([]);
     const [participantInput, setParticipantInput] = useState("");
     const [priceRange, setPriceRange] = useState("");
@@ -88,107 +95,107 @@ export default function Plan() {
 
 
     return (
-        <div className="plan-container">
-            <h1>Plan an Event</h1>
-            <form onSubmit={handleSubmit} className="plan-form">
-                {/* Participants Input */}
-                <div className="form-group">
-                    <label>Participants:</label>
-                    <div className="participant-input-container">
+        <BackgroundWrapper>
+            <div className="plan-container">
+                <h1>Plan an Event</h1>
+                <form onSubmit={handleSubmit} className="plan-form">
+                    {/* Participants Input */}
+                    <div className="form-group">
+                        <label>Participants:</label>
+                        <div className="participant-input-container">
+                            <input
+                                type="text"
+                                placeholder="Type a name and press Enter"
+                                value={participantInput}
+                                onChange={(e) => setParticipantInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleAddParticipant(e);
+                                }}
+                            />
+                        </div>
+                        <div className="participant-bubbles">
+                            {participants.map((p) => (
+                                <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Price Range */}
+                    <div className="form-group">
+                        <label>Price Range:</label>
+                        <div className="price-buttons">
+                            {["£", "££", "£££"].map((symbol, index) => (
+                                <button
+                                    type="button"
+                                    key={index}
+                                    className={`price-btn ${priceRange === symbol ? "selected" : ""}`}
+                                    onClick={() => setPriceRange(symbol)}
+                                >
+                                    {symbol}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Disability Access */}
+                    <div className="form-group checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={disabilityAccess}
+                                onChange={(e) => setDisabilityAccess(e.target.checked)}
+                            />
+                            Disability Access Required
+                        </label>
+                    </div>
+
+                    {/* Date and Time */}
+                    <div className="form-group">
+                        <label>Date:</label>
                         <input
-                            type="text"
-                            placeholder="Type a name and press Enter"
-                            value={participantInput}
-                            onChange={(e) => setParticipantInput(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") handleAddParticipant(e);
-                            }}
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
                         />
                     </div>
-                    <div className="participant-bubbles">
-                        {participants.map((p) => (
-                            <span key={p} className="bubble" onClick={() => handleRemoveParticipant(p)}>
-                {p} ✕
-              </span>
-                        ))}
-                    </div>
-                </div>
 
-                {/* Price Range */}
-                <div className="form-group">
-                    <label>Price Range:</label>
-                    <div className="price-buttons">
-                        {["£", "££", "£££"].map((symbol, index) => (
-                            <button
-                                type="button"
-                                key={index}
-                                className={`price-btn ${priceRange === symbol ? "selected" : ""}`}
-                                onClick={() => setPriceRange(symbol)}
-                            >
-                                {symbol}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Disability Access */}
-                <div className="form-group checkbox">
-                    <label>
+                    <div className="form-group">
+                        <label>Time:</label>
                         <input
-                            type="checkbox"
-                            checked={disabilityAccess}
-                            onChange={(e) => setDisabilityAccess(e.target.checked)}
+                            type="time"
+                            value={time}
+                            onChange={(e) => setTime(e.target.value)}
+                            required
                         />
-                        Disability Access Required
-                    </label>
-                </div>
-
-                {/* Date and Time */}
-                <div className="form-group">
-                    <label>Date:</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="form-group">
-                    <label>Time:</label>
-                    <input
-                        type="time"
-                        value={time}
-                        onChange={(e) => setTime(e.target.value)}
-                        required
-                    />
-                </div>
-
-                {/* Preferences */}
-                <div className="form-group">
-                    <label>Preferences:</label>
-                    <div className="preferences-container">
-                        {allPreferences.map((pref) => (
-                            <button
-                                type="button"
-                                key={pref}
-                                className={`pref-btn ${preferences.includes(pref) ? "selected" : ""}`}
-                                onClick={() => togglePreference(pref)}
-                            >
-                                {pref}
-                            </button>
-                        ))}
                     </div>
-                </div>
 
-                <button type="submit" className="submit-btn">
-                    Submit
-                </button>
-            </form>
+                    {/* Preferences */}
+                    <div className="form-group">
+                        <label>Preferences:</label>
+                        <div className="preferences-container">
+                            {allPreferences.map((pref) => (
+                                <button
+                                    type="button"
+                                    key={pref}
+                                    className={`pref-btn ${preferences.includes(pref) ? "selected" : ""}`}
+                                    onClick={() => togglePreference(pref)}
+                                >
+                                    {pref}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
 
-            <Link to="/home" className="back-link">
-                Back to Home
-            </Link>
-        </div>
+                    <button type="submit" className="submit-btn">
+                        Submit
+                    </button>
+                </form>
+
+                <Link to="/home" className="back-link">
+                    Back to Home
+                </Link>
+            </div>
+        </BackgroundWrapper>
     );
 }

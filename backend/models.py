@@ -59,7 +59,7 @@ class CreateLocationRequest(BaseModel):
 
 
 class LocationSearchRequest(BaseModel):
-    keywords: list[str]
+    # keywords: list[str]
     location: str | None = None
     open_time: str | None = None
     close_time: str | None = None
@@ -81,6 +81,10 @@ class LocationSearchRequest(BaseModel):
 class LocationRankingRequest(BaseModel):
     location_id: int
     ranking: int
+
+
+class AddUserToEventRequest(BaseModel):
+    user_id: int
 
 
 class CreateKeywordRequest(BaseModel):
@@ -140,6 +144,12 @@ class ReviewData(Base):
     user_review = Column(String)
     user_rating = Column(Integer)
     location = relationship("LocationInfo", back_populates="reviews")
+
+
+class AddReviewRequest(BaseModel):
+    location_id: int
+    user_review: str
+    user_rating: int
 
 
 # own table for the different events that get made by event planner

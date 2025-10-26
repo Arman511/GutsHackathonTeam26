@@ -1,35 +1,46 @@
-import DomeGallery from "./react-bits/DomeGallery";
-import './Login.css';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // import useNavigate
+import { useNavigate } from 'react-router-dom';
+import DomeGallery from "./react-bits/DomeGallery";
+import { setAccessToken } from "../main";
+import { login } from "../api/api";
+import './Login.css';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const navigate = useNavigate(); // initialize navigate
+    const navigate = useNavigate();
 
-    const handleSubmit = e => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Login submitted', { email, password });
-        // You can navigate on successful login if desired
-        // navigate('/home');
+
+        const response = await login({ username: email, password });
+
+        if (response?.access_token) {
+            setAccessToken(response.access_token);
+            localStorage.setItem("access_token", response.access_token);
+            navigate("/home");
+        } else {
+            alert("Invalid email or password");
+        }
     };
 
     const handleSkip = () => {
-        navigate('/home'); // go directly to /home
+        navigate('/home');
     };
 
     return (
-        <div className="login-page" >
+        <div className="login-page">
             <DomeGallery />
+
             <div className="login-box">
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
-                    <input type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} required />
+                    <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
                     <button type="submit">Login</button>
                 </form>
-                <button type="button" className="skip-button" onClick={handleSkip} style={{ marginTop: '10px' }}>
+
+                <button className="skip-button" onClick={handleSkip}>
                     Skip to Home
                 </button>
             </div>

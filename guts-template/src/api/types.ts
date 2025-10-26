@@ -37,7 +37,7 @@ export type CreateLocationRequest = {
 }
 
 export type LocationSearchRequest = {
-    keywords: string[]
+    // keywords: string[]
     location?: string | null
     open_time?: string | null
     close_time?: string | null
