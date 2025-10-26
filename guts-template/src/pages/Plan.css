@@ -168,3 +168,33 @@ h1 {
     font-size: 1em;
     line-height: 1;
 }
+
+/* Event Name and Description styling */
+.form-group input[type="text"],
+.form-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 2px solid #0088cc;
+    background: #f7fbfc;
+    font-size: 1.1em;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group textarea:focus {
+    border-color: #005577;
+    box-shadow: 0 0 0 2px #b3e5fc;
+    outline: none;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #005577;
+    margin-bottom: 2px;
+    display: block;
+    font-size: 1.05em;
+}
