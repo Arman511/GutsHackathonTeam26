@@ -160,8 +160,6 @@ async def get_created_events(user: user_dependency, db: db_dependency):
     return {"events": formatted_events}
 
 
-
-
 @event_router.post("/create_event", status_code=status.HTTP_201_CREATED)
 async def create_event(
     event_data: CreateEventRequest, user: user_dependency, db: db_dependency
@@ -258,6 +256,56 @@ async def attend_event(
     )
     db.commit()
     return {"message": "Users marked as attending the event successfully"}
+
+
+@event_router.delete(
+    "/remove_user_from_event/{event_id}", status_code=status.HTTP_200_OK
+)
+async def remove_user_from_event(
+    event_id: int,
+    request: AttendEventRequest,
+    user: user_dependency,
+    db: db_dependency,
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    # check if user exists
+    validate_user_id = db.execute(
+        text('SELECT id FROM "Users" WHERE id = :user_id'),
+        {"user_id": request.user_id},
+    ).fetchone()
+    if not validate_user_id:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # check if event exists
+    validate_event_id = db.execute(
+        text('SELECT id FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    ).fetchone()
+    if not validate_event_id:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # check if user is attending
+    existing_attendance = db.execute(
+        text(
+            'SELECT * FROM "EventUsers" WHERE user_id = :user_id AND event_id = :event_id'
+        ),
+        {"user_id": request.user_id, "event_id": event_id},
+    ).fetchone()
+    if not existing_attendance:
+        return {"message": "User is not attending the event"}
+
+    # remove user from event
+    db.execute(
+        text(
+            'DELETE FROM "EventUsers" WHERE user_id = :user_id AND event_id = :event_id'
+        ),
+        {"user_id": request.user_id, "event_id": event_id},
+    )
+    db.commit()
+    return {"message": "User removed from event successfully"}
+
 
 @event_router.post("/add_user_to_event/{event_id}", status_code=status.HTTP_200_OK)
 async def add_user_to_event(
