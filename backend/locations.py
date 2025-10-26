@@ -132,17 +132,31 @@ async def search_locations(
     conditions = []
     params = {}
     for field, value in query.model_dump().items():
-        if value is not None:
-            if field == "keywords":
-                keyword_conditions = []
-                for idx, keyword in enumerate(value):
-                    key = f"keyword_{idx}"
-                    keyword_conditions.append(f"keywords ILIKE :{key}")
-                    params[key] = f"%{keyword}%"
-                conditions.append("(" + " OR ".join(keyword_conditions) + ")")
-            else:
-                conditions.append(f"{field} = :{field}")
-                params[field] = value
+        if value is None:
+            continue
+
+        if field == "keywords":
+            # keywords are stored in a separate table linked via LocationKeywords.
+            # build an EXISTS subquery that matches any of the provided keywords.
+            keyword_preds = []
+            for idx, keyword in enumerate(value):
+                key = f"keyword_{idx}"
+                keyword_preds.append(f"k.keyword ILIKE :{key}")
+                params[key] = f"%{keyword}%"
+            if keyword_preds:
+                exists_sub = (
+                    'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
+                    'JOIN "Keywords" k ON k.id = lk.keyword_id '
+                    'WHERE lk.location_id = "LocationInfo".id AND ('
+                    + " OR ".join(keyword_preds)
+                    + "))"
+                )
+                conditions.append(exists_sub)
+            continue
+
+        # default equality filter for other fields
+        conditions.append(f"{field} = :{field}")
+        params[field] = value
     if not conditions:
         raise HTTPException(
             status_code=400, detail="At least one search parameter must be provided"
@@ -246,7 +260,6 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         "food": event_config.food,
         "accessible": event_config.accessible,
         "formal_attire": event_config.formal_attire,
-        "reservation_needed": event_config.reservation_needed,
     }
     where_clauses = []
     for key, value in formatted_event_config.items():
