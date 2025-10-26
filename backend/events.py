@@ -305,3 +305,36 @@ async def remove_user_from_event(
     )
     db.commit()
     return {"message": "User removed from event successfully"}
+
+
+@event_router.delete("/delete_event/{event_id}", status_code=status.HTTP_200_OK)
+async def delete_event(
+    event_id: int,
+    user: user_dependency,
+    db: db_dependency,
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    # check if event exists
+    validate_event_id = db.execute(
+        text('SELECT id FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    ).fetchone()
+    if not validate_event_id:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    # delete event users
+    db.execute(
+        text('DELETE FROM "EventUsers" WHERE event_id = :event_id'),
+        {"event_id": event_id},
+    )
+    db.commit()
+
+    # delete event
+    db.execute(
+        text('DELETE FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    )
+    db.commit()
+    return {"message": "Event deleted successfully"}
