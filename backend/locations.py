@@ -228,7 +228,7 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     event_config = db.execute(
         text(
             """
-        SELECT * FROM "EventInfo" WHERE event_id = :event_id
+        SELECT * FROM "EventsInfo" WHERE id = :event_id
         """
         ),
         {"event_id": event_id},
@@ -262,13 +262,11 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
 
 
 @location_router.post("/add_google_reviews", status_code=status.HTTP_200_OK)
-def add_google_reviews_to_location(
-    review: AddReviewRequest, db: db_dependency
-):
+def add_google_reviews_to_location(review: AddReviewRequest, db: db_dependency):
     entry = ReviewData(
-        location_id=review.location_id, 
-        user_review=review.user_review, 
-        user_rating=review.user_rating
+        location_id=review.location_id,
+        user_review=review.user_review,
+        user_rating=review.user_rating,
     )
     db.add(entry)
     db.commit()
