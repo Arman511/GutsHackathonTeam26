@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Agenda from "./pages/Agenda";
 import Groups from "./pages/Groups";
 import Plan from "./pages/Plan";
+import Wheel from "./pages/Wheel";
 import "./index.css";
 
 let accessToken = null;
@@ -28,6 +29,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/agenda" element={<Agenda />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/plan" element={<Plan />} />
+                <Route path="/wheel" element={<Wheel />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </Router>
