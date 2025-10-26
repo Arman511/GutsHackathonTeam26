@@ -90,7 +90,8 @@ export default function Home() {
                         fontSize: '1.1em',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'space-between'
+                        textAlign: 'center',
+                        justifyContent: 'center'
                     }}
                 >
                     <Box>
@@ -111,7 +112,7 @@ export default function Home() {
                     </Button>
                 </Alert>
 
-                <Grid container spacing={3} mb={4}>
+                <Grid container spacing={3} mb={4} style={{display: 'flex', justifyContent: 'center'}}>
                     {cards.map((card) => (
                         <Grid item xs={12} md={4} key={card.title}>
                             <Link to={card.path} style={{ textDecoration: 'none' }}>
