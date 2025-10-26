@@ -345,7 +345,7 @@ def add_google_reviews_to_location(review: AddReviewRequest, db: db_dependency):
     return {"detail": "Review added successfully"}
 
 
-@location_router.get("/location/{location_id}", status_code=status.HTTP_200_OK)
+@location_router.get("/delete_location/{location_id}", status_code=status.HTTP_200_OK)
 def delete_location(location_id: int, user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
