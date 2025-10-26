@@ -59,3 +59,4 @@ export type LoginRequest = { username: string; password: string }
 export type LoginResponse = { access_token: string; token_type: string }
 export type RegisterRequest = { name: string; username: string; password: string }
 export type CreateKeywordRequest = { keyword: string }
+export type AddUsersToEventRequest = { user_ids: number[] }

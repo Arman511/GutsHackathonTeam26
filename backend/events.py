@@ -10,6 +10,7 @@ event_router = APIRouter(prefix="/events", tags=["events"])
 
 from backend.models import (
     AddUserToEventRequest,
+    AddUsersToEventRequest,
     AttendEventRequest,
     CreateEventRequest,
     EventsInfo,
@@ -210,6 +211,47 @@ async def get_event_attendees(event_id: int, user: user_dependency, db: db_depen
             {"id": attendee.id, "name": attendee.name, "username": attendee.username}
         )
     return {"attendees": formatted_attendees}
+
+
+@event_router.post("/add_users_to_event/{event_id}", status_code=status.HTTP_200_OK)
+async def add_users_to_event(
+    event_id: int,
+    user: user_dependency,
+    db: db_dependency,
+    add_user_request: AddUsersToEventRequest,
+):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication Failed")
+
+    validate_event_id = db.execute(
+        text('SELECT id FROM "EventsInfo" WHERE id = :event_id'),
+        {"event_id": event_id},
+    ).fetchone()
+    if not validate_event_id:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    for user_id in add_user_request.user_ids:
+        validate_user_id = db.execute(
+            text('SELECT id FROM "Users" WHERE id = :user_id'),
+            {"user_id": user_id},
+        ).fetchone()
+        if not validate_user_id:
+            continue  # Skip invalid user IDs
+
+        db.execute(
+            text('DELETE FROM "EventUsers" WHERE event_id = :event_id'),
+            {"event_id": event_id},
+        )
+        db.commit()
+
+        db.execute(
+            text(
+                'INSERT INTO "EventUsers" (user_id, event_id) VALUES (:user_id, :event_id)'
+            ),
+            {"user_id": user_id, "event_id": event_id},
+        )
+    db.commit()
+    return {"message": "Users added to the event successfully"}
 
 
 @event_router.post("/attend_event/{event_id}", status_code=status.HTTP_200_OK)
