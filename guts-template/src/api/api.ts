@@ -1,4 +1,4 @@
-import { CreateEventRequest, CreateLocationRequest, LocationRankingRequest, LocationSearchRequest, LoginRequest, LoginResponse, RegisterRequest, CreateKeywordRequest, AttendEventRequest } from "./types"
+import { CreateEventRequest, CreateLocationRequest, LocationRankingRequest, LocationSearchRequest, LoginRequest, LoginResponse, RegisterRequest, CreateKeywordRequest, AttendEventRequest, AddUsersToEventRequest } from "./types"
 
 
 async function request(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
@@ -11,6 +11,9 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
         const text = await res.text()
         if (res.status === 401) {
             localStorage.removeItem("access_token");
+            if (path === "/api/auth/token") {
+                throw new Error("Unauthorized");
+            }
             window.location.href = "/login";
         }
         console.error('API request failed:', { path, status: res.status, statusText: res.statusText, body: text })
@@ -23,7 +26,7 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
 async function loggedInRequest(path: string, opts: RequestInit = {}, content_type: string = 'application/json'): Promise<any> {
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken) {
-        throw new Error('No access token found, user is not logged in')
+        window.location.href = "/login";
     }
     const headers = {
         'Authorization': `bearer ${accessToken}`,
@@ -51,7 +54,11 @@ export async function getMe() {
 // pass in access option opts: RequestInit = {} is a dictoin ops.headers header.auth equals bearer and auth token
 
 export async function createEvent(data: CreateEventRequest) {
-    return loggedInRequest('/api/events/create_event', { method: 'POST', body: JSON.stringify(data) })
+    return loggedInRequest("/api/events/create_event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
 }
 
 export async function addLocation(data: CreateLocationRequest) {
@@ -124,4 +131,8 @@ export async function healthCheck() {
 
 export async function attendEvent(event_id: number, user_id: AttendEventRequest) {
     return loggedInRequest(`/api/events/attend_event/${event_id}`, { method: 'POST', body: JSON.stringify(user_id) })
+}
+
+export async function addUsersToEvent(event_id: number, user_ids: AddUsersToEventRequest) {
+    return loggedInRequest(`/api/events/add_users_to_event/${event_id}`, { method: 'POST', body: JSON.stringify(user_ids) })
 }

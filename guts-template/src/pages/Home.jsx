@@ -31,10 +31,8 @@ export default function Home() {
 
     const handleQuizComplete = (topTags) => {
         console.log("Users personality boiled down to: ", topTags)
-
-        // Save to storage in browswer
+        // Armans call to bronwsern for the psersnalit
         localStorage.setItem('personality_tags', JSON.stringify(topTags))
-        
         alert("Personality quiz complete! Well use these to recommend better activites for you.")
         setShowQuiz(false)
     }

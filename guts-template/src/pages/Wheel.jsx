@@ -2,17 +2,27 @@ import { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import './Wheel.css';
+// this is library is awesome and gives the spinny wheel code is react library
 
 const data = [
-    { option: '%10' },
-    { option: '%20' },
-    { option: '%30' },
-    { option: '%40' },
-    { option: '%50' },
-    { option: '%60' },
-    { option: '%70' },
-    { option: '%90' }
+    { option: 'Golf Fang Glasgow' },
+    { option: 'Bar 91' },
+    { option: "Maggie's" },
+    { option: "Tennents Bar" },
+    { option: "O'Neill's Grand Central" },
+    { option: 'Boteco Do Brasil' },
+    { option: "The Lauder's" },
+    { option: 'NQ64 Glasgow' },
+    { option: 'Mecca Glasgow Drumchapel' },
+    { option: 'Alea Glasgow Casino' },
+    { option: 'Enish Restaurant & Lounge' },
+    { option: "Waxy O'Connor's Glasgow" },
+    { option: 'Mono' },
+    { option: 'Super Bario' },
+    { option: 'The Flying Duck' },
+    { option: '18 Candleriggs' }
 ];
+
 
 export default function WheelPage() {
     const [mustSpin, setMustSpin] = useState(false);
@@ -30,7 +40,7 @@ export default function WheelPage() {
                     mustStartSpinning={mustSpin}
                     prizeNumber={prizeNumber}
                     data={data}
-                    fontSize={18}
+                    fontSize={11}
                     backgroundColors={['#0088cc', '#ffffff']}
                     textColors={['#ffffff', '#0088cc']}
                     onStopSpinning={() => {

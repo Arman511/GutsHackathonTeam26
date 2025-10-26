@@ -7,11 +7,10 @@
 }
 
 .spin-button {
-    margin-top: 40px;
+    margin-top: 17px;
     padding: 12px 32px;
-    font-size: 20px;
+    font-size: 19px;
     font-weight: bold;
-    border: none;
     cursor: pointer;
     border-radius: 15px;
     background-color: #0088cc;
@@ -25,5 +24,5 @@
 }
 
 .spin-button:active {
-    transform: scale(1.05);
+    transform: scale(1.10);
 }

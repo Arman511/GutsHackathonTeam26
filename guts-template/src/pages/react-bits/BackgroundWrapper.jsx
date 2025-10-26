@@ -10,3 +10,7 @@ export default function BackgroundWrapper({ children }) {
         </div>
     );
 }
+
+// React bits library imports are in this folder
+// This code is all from react bits
+//

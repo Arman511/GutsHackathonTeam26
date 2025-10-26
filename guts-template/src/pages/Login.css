@@ -4,6 +4,7 @@
     position: relative;
 }
 
+/*Force to the front cus the lirbary inport for mega sas globe takes over*/
 .login-box {
     position: absolute;
     top: 50%;
@@ -43,6 +44,7 @@
     cursor: pointer;
 }
 
+/*hovooer is saas colour*/
 .login-box button:hover {
     padding: 0.5rem 1rem;
     background: #0088cc;

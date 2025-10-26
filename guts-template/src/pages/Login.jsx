@@ -8,19 +8,24 @@ import './Login.css';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const response = await login({ username: username, password });
 
-        const response = await login({ username: username, password });
-
-        if (response?.access_token) {
-            setAccessToken(response.access_token);
-            localStorage.setItem("access_token", response.access_token);
-            navigate("/home");
-        } else {
-            alert("Invalid username or password");
+            if (response?.access_token) {
+                setAccessToken(response.access_token);
+                localStorage.setItem("access_token", response.access_token);
+                navigate("/home");
+            } else {
+                alert("Invalid username or password");
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            setError(`Login failed: ${error.message}`);
         }
     };
 
@@ -39,6 +44,8 @@ export default function Login() {
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
                     <button type="submit">Login</button>
                 </form>
+                <br />
+                {error && <p className="error-message">{error}</p>}
             </div>
         </div>
     );
