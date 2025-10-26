@@ -1,12 +1,12 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import text
-import re
 from backend.dependencies import db_dependency as db_dependency
 from backend.auth import get_current_user
 from starlette import status
 
 from backend.models import (
+    AddReviewRequest,
     CreateLocationRequest,
     LocationInfo,
     LocationRankingRequest,
@@ -132,43 +132,23 @@ async def search_locations(
     conditions = []
     params = {}
     for field, value in query.model_dump().items():
-        if value is None:
-            continue
-        if (
-            field in ("vegetarian", "food", "drinks", "group_activity", "accessible")
-            and value is False
-        ):
-            continue
-
-        if field == "open_time":
-            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
-                raise HTTPException(
-                    status_code=400, detail="open_time must be in HH:MM 24-hour format"
-                )
-            conditions.append("open_time <= :open_time")
-            params["open_time"] = value
-        elif field == "close_time":
-            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
-                raise HTTPException(
-                    status_code=400, detail="close_time must be in HH:MM 24-hour format"
-                )
-            conditions.append("close_time >= :close_time")
-            params["close_time"] = value
-        elif field == "keywords":
-            keyword_conditions = []
-            for idx, keyword in enumerate(value):
-                key = f"keyword_{idx}"
-                keyword_conditions.append(f"keywords ILIKE :{key}")
-                params[key] = f"%{keyword}%"
-            conditions.append("(" + " OR ".join(keyword_conditions) + ")")
-        else:
-            conditions.append(f"{field} = :{field}")
-            params[field] = value
+        if value is not None:
+            if field == "keywords":
+                keyword_conditions = []
+                for idx, keyword in enumerate(value):
+                    key = f"keyword_{idx}"
+                    keyword_conditions.append(f"keywords ILIKE :{key}")
+                    params[key] = f"%{keyword}%"
+                conditions.append("(" + " OR ".join(keyword_conditions) + ")")
+            else:
+                conditions.append(f"{field} = :{field}")
+                params[field] = value
     if not conditions:
-        locations = db.execute(text('SELECT * FROM "LocationInfo"')).fetchall()
-    else:
-        sql += " AND ".join(conditions)
-        locations = db.execute(text(sql), params).fetchall()
+        raise HTTPException(
+            status_code=400, detail="At least one search parameter must be provided"
+        )
+    sql += " AND ".join(conditions)
+    locations = db.execute(text(sql), params).fetchall()
     formatted_locations = []
     for location in locations:
         formatted_locations.append(
@@ -248,7 +228,7 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     event_config = db.execute(
         text(
             """
-        SELECT * FROM "EventsInfo" WHERE id = :event_id
+        SELECT * FROM "EventInfo" WHERE event_id = :event_id
         """
         ),
         {"event_id": event_id},
@@ -266,81 +246,29 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         "food": event_config.food,
         "accessible": event_config.accessible,
         "formal_attire": event_config.formal_attire,
+        "reservation_needed": event_config.reservation_needed,
     }
     where_clauses = []
-    params = {}
     for key, value in formatted_event_config.items():
-        if value is None:
-            continue
-
-        if (
-            key in ("vegetarian", "food", "drinks", "group_activity", "accessible")
-            and value is False
-        ):
-            continue
-
-        # time handling: want locations that cover the event times
-        if key == "open_time":
-            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
-                raise HTTPException(
-                    status_code=400, detail="open_time must be in HH:MM 24-hour format"
-                )
-            where_clauses.append("open_time <= :open_time")
-            params["open_time"] = value
-            continue
-        if key == "close_time":
-            if not re.match(r"^([01]\d|2[0-3]):[0-5]\d$", value):
-                raise HTTPException(
-                    status_code=400, detail="close_time must be in HH:MM 24-hour format"
-                )
-            where_clauses.append("close_time >= :close_time")
-            params["close_time"] = value
-            continue
-
-        where_clauses.append(f"{key} = :{key}")
-        params[key] = value
-    if not where_clauses:
-        raise HTTPException(
-            status_code=400, detail="No criteria found for event filtering"
-        )
+        if value is not None:
+            where_clauses.append(f"{key} = {value}")
     sql = """SELECT * FROM "LocationInfo" WHERE """ + " AND ".join(where_clauses)
-    locations = db.execute(text(sql), params).fetchall()
+    locations = db.execute(text(sql), formatted_event_config).fetchall()
     if not locations:
         raise HTTPException(
             status_code=404, detail="No locations found matching event criteria"
         )
-    formatted_locations = []
-    for location in locations:
-        formatted_locations.append(
-            {
-                "id": location.id,
-                "location": location.location,
-                "description": location.description,
-                "open_time": location.open_time,
-                "close_time": location.close_time,
-                "address": location.address,
-                "google_rating": location.google_rating,
-                "price_range": location.price_range,
-                "outdoor": location.outdoor,
-                "group_activity": location.group_activity,
-                "vegetarian": location.vegetarian,
-                "drinks": location.drinks,
-                "food": location.food,
-                "accessible": location.accessible,
-                "formal_attire": location.formal_attire,
-                "reservation_needed": location.reservation_needed,
-                "image_url": location.image_url,
-            }
-        )
-    return {"locations": formatted_locations}
+    return {"locations": locations}
 
 
 @location_router.post("/add_google_reviews", status_code=status.HTTP_200_OK)
 def add_google_reviews_to_location(
-    location_id: int, user_review: str, user_rating: int, db: db_dependency
+    review: AddReviewRequest, db: db_dependency
 ):
     entry = ReviewData(
-        location_id=location_id, user_review=user_review, user_rating=user_rating
+        location_id=review.location_id, 
+        user_review=review.user_review, 
+        user_rating=review.user_rating
     )
     db.add(entry)
     db.commit()

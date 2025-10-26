@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Agenda.css";
 
-// This should eventually be an API call
 const eventsData = [
     {
         id: 1,
@@ -34,42 +34,26 @@ const groups = ["Marketing", "Development", "HR", "LaserTag"];
 const times = ["This Week", "This Month", "This Year", "Next Year"];
 
 export default function Agenda() {
+    const navigate = useNavigate();
     const [expandedId, setExpandedId] = useState(null);
     const [selectedGroups, setSelectedGroups] = useState([]);
     const [selectedTime, setSelectedTime] = useState(null);
 
-    const toggleExpand = (id) => {
-        setExpandedId(expandedId === id ? null : id);
-    };
-
-    const toggleGroup = (group) => {
-        if (selectedGroups.includes(group)) {
-            setSelectedGroups(selectedGroups.filter((g) => g !== group));
-        } else {
-            setSelectedGroups([...selectedGroups, group]);
-        }
-    };
-
-    const selectTime = (time) => {
-        setSelectedTime(selectedTime === time ? null : time);
-    };
+    const toggleExpand = (id) => setExpandedId(expandedId === id ? null : id);
+    const toggleGroup = (group) => selectedGroups.includes(group) ? setSelectedGroups(selectedGroups.filter(g => g !== group)) : setSelectedGroups([...selectedGroups, group]);
+    const selectTime = (time) => setSelectedTime(selectedTime === time ? null : time);
 
     const filteredEvents = eventsData.filter((event) => {
-        let groupMatch =
-            selectedGroups.length === 0 || selectedGroups.includes(event.group);
-
+        let groupMatch = selectedGroups.length === 0 || selectedGroups.includes(event.group);
         let timeMatch = true;
         const today = new Date();
         const eventDate = new Date(event.date);
 
         if (selectedTime === "This Week") {
-            const weekEnd = new Date();
-            weekEnd.setDate(today.getDate() + 7);
+            const weekEnd = new Date(); weekEnd.setDate(today.getDate() + 7);
             timeMatch = eventDate >= today && eventDate <= weekEnd;
         } else if (selectedTime === "This Month") {
-            timeMatch =
-                eventDate.getMonth() === today.getMonth() &&
-                eventDate.getFullYear() === today.getFullYear();
+            timeMatch = eventDate.getMonth() === today.getMonth() && eventDate.getFullYear() === today.getFullYear();
         } else if (selectedTime === "This Year") {
             timeMatch = eventDate.getFullYear() === today.getFullYear();
         } else if (selectedTime === "Next Year") {
@@ -80,71 +64,66 @@ export default function Agenda() {
     });
 
     return (
-        <div className="agenda-container">
-            <h1>Events Page</h1>
-            <Link to="/home">Home</Link>
+        <BackgroundWrapper>
+            <div className="agenda-container">
+                <h1>Events Page</h1>
+                <button className="home-btn" onClick={() => navigate("/home")}>
+                    Home
+                </button>
 
-            {/* Group filters */}
-            <div className="filters">
-                {groups.map((group) => (
-                    <button
-                        key={group}
-                        className={`filter-button ${selectedGroups.includes(group) ? "selected" : ""}`}
-                        onClick={() => toggleGroup(group)}
-                    >
-                        {group}
-                    </button>
-                ))}
-            </div>
+                <div className="filters">
+                    {groups.map((group) => (
+                        <button
+                            key={group}
+                            className={`filter-button ${selectedGroups.includes(group) ? "selected" : ""}`}
+                            onClick={() => toggleGroup(group)}
+                        >
+                            {group}
+                        </button>
+                    ))}
+                </div>
 
-            {/* Time filters */}
-            <div className="filters">
-                {times.map((time) => (
-                    <button
-                        key={time}
-                        className={`filter-button ${selectedTime === time ? "selected" : ""}`}
-                        onClick={() => selectTime(time)}
-                    >
-                        {time}
-                    </button>
-                ))}
-            </div>
+                <div className="filters">
+                    {times.map((time) => (
+                        <button
+                            key={time}
+                            className={`filter-button ${selectedTime === time ? "selected" : ""}`}
+                            onClick={() => selectTime(time)}
+                        >
+                            {time}
+                        </button>
+                    ))}
+                </div>
 
-            {/* Events list */}
-            <div className="events-container">
-                {filteredEvents.map((event) => (
-                    <div key={event.id} className="event-card">
-                        {/* Image on the left */}
-                        {event.image && (
-                            <div className="event-image">
-                                <img src={event.image} alt={event.title} />
-                            </div>
-                        )}
-
-                        {/* Event details on the right */}
-                        <div className="event-details">
-                            <div className="event-info">
-                                <h3>{event.title}</h3>
-                                <p>{event.date}</p>
-                                <p>Group: {event.group}</p>
-                            </div>
-
-                            {/* More info toggle */}
-                            <div className="event-more">
-                                <button onClick={() => toggleExpand(event.id)}>
-                                    {expandedId === event.id ? "🔽 Hide Details" : "▶️ More Info"}
-                                </button>
-
-                                {expandedId === event.id && (
-                                    <div className="event-extra">
-                                        {event.details || "Details not decided yet"}
-                                    </div>
-                                )}
+                <div className="events-container">
+                    {filteredEvents.map((event) => (
+                        <div key={event.id} className={`event-card ${expandedId === event.id ? "expanded" : ""}`}>
+                            {event.image && (
+                                <div className="event-image">
+                                    <img src={event.image} alt={event.title} />
+                                </div>
+                            )}
+                            <div className="event-details">
+                                <div className="event-info">
+                                    <h3>{event.title}</h3>
+                                    <p>{event.date}</p>
+                                    <p>Group: {event.group}</p>
+                                </div>
+                                <div className="event-more">
+                                    <button onClick={() => toggleExpand(event.id)}>
+                                        {expandedId === event.id ? "🔽 Hide Details" : "▶️ More Info"}
+                                    </button>
+                                    {expandedId === event.id && (
+                                        <div className="event-extra">
+                                            {event.details || "Details not decided yet"}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
-        </div>
+        </BackgroundWrapper>
     );
 }
