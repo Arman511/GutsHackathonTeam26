@@ -1,6 +1,5 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
-
 import './Iridescence.css';
 
 const vertexShader = `
@@ -49,56 +48,55 @@ void main() {
 export default function Iridescence({ color = [0, 0.388, 0.827], speed = 0.2, amplitude = 0.1, mouseReact = true, ...rest }) {
     const ctnDom = useRef(null);
     const mousePos = useRef({ x: 0.5, y: 0.5 });
+    const canvasRef = useRef(null);
+    const rendererRef = useRef(null);
+    const programRef = useRef(null);
+    const animateIdRef = useRef(null);
 
     useEffect(() => {
         if (!ctnDom.current) return;
         const ctn = ctnDom.current;
-        const renderer = new Renderer();
+
+        // Create canvas only once
+        const canvas = document.createElement('canvas');
+        canvasRef.current = canvas;
+        ctn.appendChild(canvas);
+
+        const renderer = new Renderer({ canvas });
+        rendererRef.current = renderer;
         const gl = renderer.gl;
         gl.clearColor(1, 1, 1, 1);
 
-        let program;
-
-        function resize() {
-            const scale = 1;
-            renderer.setSize(ctn.offsetWidth * scale, ctn.offsetHeight * scale);
-            if (program) {
-                program.uniforms.uResolution.value = new Color(
-                    gl.canvas.width,
-                    gl.canvas.height,
-                    gl.canvas.width / gl.canvas.height
-                );
-            }
-        }
-        window.addEventListener('resize', resize, false);
-        resize();
-
         const geometry = new Triangle(gl);
-        program = new Program(gl, {
+        const program = new Program(gl, {
             vertex: vertexShader,
             fragment: fragmentShader,
             uniforms: {
                 uTime: { value: 0 },
                 uColor: { value: new Color(...color) },
-                uResolution: {
-                    value: new Color(gl.canvas.width, gl.canvas.height, gl.canvas.width / gl.canvas.height)
-                },
+                uResolution: { value: new Color(canvas.width, canvas.height, canvas.width / canvas.height) },
                 uMouse: { value: new Float32Array([mousePos.current.x, mousePos.current.y]) },
                 uAmplitude: { value: amplitude },
                 uSpeed: { value: speed }
             }
         });
+        programRef.current = program;
 
         const mesh = new Mesh(gl, { geometry, program });
-        let animateId;
+
+        function resize() {
+            renderer.setSize(ctn.offsetWidth, ctn.offsetHeight);
+            program.uniforms.uResolution.value = new Color(canvas.width, canvas.height, canvas.width / canvas.height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
         function update(t) {
-            animateId = requestAnimationFrame(update);
+            animateIdRef.current = requestAnimationFrame(update);
             program.uniforms.uTime.value = t * 0.001;
             renderer.render({ scene: mesh });
         }
-        animateId = requestAnimationFrame(update);
-        ctn.appendChild(gl.canvas);
+        animateIdRef.current = requestAnimationFrame(update);
 
         function handleMouseMove(e) {
             const rect = ctn.getBoundingClientRect();
@@ -113,15 +111,14 @@ export default function Iridescence({ color = [0, 0.388, 0.827], speed = 0.2, am
         }
 
         return () => {
-            cancelAnimationFrame(animateId);
+            cancelAnimationFrame(animateIdRef.current);
             window.removeEventListener('resize', resize);
             if (mouseReact) {
                 ctn.removeEventListener('mousemove', handleMouseMove);
             }
-            ctn.removeChild(gl.canvas);
+            ctn.removeChild(canvas);
             gl.getExtension('WEBGL_lose_context')?.loseContext();
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [color, speed, amplitude, mouseReact]);
 
     return <div ref={ctnDom} className="iridescence-container" {...rest} />;
