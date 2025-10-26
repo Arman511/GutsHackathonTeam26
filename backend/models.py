@@ -24,7 +24,6 @@ class CreateUserRequest(BaseModel):
 class CreateEventRequest(BaseModel):
     event_name: str
     event_date: str
-    location: int
     description: str
     price_range: str
     outdoor: bool

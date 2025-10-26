@@ -1,7 +1,7 @@
 meta {
-  name: Get Me
+  name: Get locations for event
   type: http
-  seq: 3
+  seq: 2
 }
 
 get {
@@ -25,6 +25,25 @@ auth:oauth2 {
   token_header_prefix: Bearer
   auto_fetch_token: true
   auto_refresh_token: false
+}
+
+body:json {
+  {
+    "event_name": "Pottery",
+    "event_date": "2025-11-10",
+    "location": 10,
+    "description": "Let's unwind with some pottery and painting!",
+    "price_range": "££",
+    "outdoor": false,
+    "group_activity": false,
+    "vegetarian": false,
+    "drinks": false,
+    "food": false,
+    "accessible": true,
+    "formal_attire": false,
+    "open_time": "11:00",
+    "close_time": "20:00"
+  }
 }
 
 settings {

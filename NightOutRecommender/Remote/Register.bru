@@ -1,17 +1,18 @@
 meta {
-  name: Token Gen
+  name: Register
   type: http
-  seq: 3
+  seq: 1
 }
 
 post {
-  url: https://nos.armandev.co.uk/api/auth/token
-  body: formUrlEncoded
+  url: https://nos.armandev.co.uk/api/auth/register
+  body: json
   auth: inherit
 }
 
 body:json {
   {
+    "name": "arman",
     "username": "arman",
     "password": "arman"
   }
