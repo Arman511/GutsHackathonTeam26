@@ -4,12 +4,6 @@ import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
 import { getUsers } from "../api/api";
 
-const Bubble = React.memo(({ name, onRemove }) => (
-    <span className="bubble" onClick={() => onRemove(name)}>
-        {name} ✕
-    </span>
-));
-
 export default function Plan() {
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([]);
