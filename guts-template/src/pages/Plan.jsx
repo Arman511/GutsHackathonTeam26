@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
-import { getUsers, createEvent, addUsersToEvent} from "../api/api";
+import { getUsers, createEvent, addUsersToEvent } from "../api/api";
 
 function Bubble({ name, onRemove }) {
     return (
@@ -139,10 +139,6 @@ export default function Plan() {
             alert("Error: " + err.message);
         }
     };
-
-    console.log("eventName:", eventName);
-    console.log("description:", description);
-    console.log("eventData:", eventData);
 
     return (
         <BackgroundWrapper>
