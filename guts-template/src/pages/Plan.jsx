@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
-import { getUsers } from "../api/api";
+import { getUsers, createEvent } from "../api/api";
+
+
+function Bubble({ name, onRemove }) {
+    return (
+        <span className="bubble" onClick={() => onRemove(name)}>
+            {name} ✕
+        </span>
+    );
+}
 
 export default function Plan() {
     const navigate = useNavigate();
@@ -81,6 +90,7 @@ export default function Plan() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(participants)
 
         try {
             const eventData = {

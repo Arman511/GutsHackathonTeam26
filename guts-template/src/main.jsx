@@ -7,6 +7,7 @@ import Agenda from "./pages/Agenda";
 import Groups from "./pages/Groups";
 import Plan from "./pages/Plan";
 import "./index.css";
+import RateEvent from "./components/RateEvent"; 
 
 let accessToken = null;
 
@@ -31,7 +32,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 <Route path="/agenda" element={<Agenda />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/plan" element={<Plan />} />
-                <Route path="*" element={<Navigate to="/" />} />
+                <Route path="/rate-event/:eventId" element={<RateEvent />} />
             </Routes>
         </Router>
     </React.StrictMode>

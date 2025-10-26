@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { 
     Container, Card, CardContent, Typography, Button, Box, 
@@ -9,7 +9,6 @@ import { getCreatedEvents, getEventResult } from "../api/api";
 import BackgroundWrapper from "./react-bits/BackgroundWrapper";
 
 export default function Agenda() {
-    const navigate = useNavigate();
     const [myEvents, setMyEvents] = useState([]);
     const [selectedEventId, setSelectedEventId] = useState(null);
     const [eventResults, setEventResults] = useState(null);
