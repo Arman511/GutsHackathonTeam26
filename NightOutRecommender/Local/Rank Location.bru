@@ -1,0 +1,40 @@
+meta {
+  name: Rank Location
+  type: http
+  seq: 13
+}
+
+get {
+  url: http://localhost:8000/api/locations/user_location_rank
+  body: json
+  auth: oauth2
+}
+
+auth:oauth2 {
+  grant_type: password
+  access_token_url: http://localhost:8000/api/auth/token
+  refresh_token_url: 
+  username: arman
+  password: arman
+  client_id: 1234
+  client_secret: 
+  scope: 
+  credentials_placement: body
+  credentials_id: credentials
+  token_placement: header
+  token_header_prefix: Bearer
+  auto_fetch_token: true
+  auto_refresh_token: false
+}
+
+body:json {
+  {
+    "location_id": 4,
+    "ranking": 3
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
