@@ -126,11 +126,9 @@ export default function Plan() {
         console.log("eventData", eventData);
 
         try {
-            // 1. Create the event
             const eventRes = await createEvent(eventData);
             const eventId = eventRes.event_id;
 
-            // 2. Add users to event
             await addUsersToEvent(eventId, { user_ids: participantIds });
 
             alert("Event created and participants added!");

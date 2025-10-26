@@ -1,28 +1,28 @@
 import { useEffect, useRef } from "react";
 
 const SplitText = ({
-                       text = "",
-                       className = "",
-                       delay = 0.05, // seconds between letters
-                       tag = "h1",
-                       textAlign = "center",
-                       style = {}, // <-- accept style prop
-                   }) => {
+    text = "",
+    className = "",
+    delay = 0.05,
+    tag = "h1",
+    textAlign = "center",
+    style = {},
+}) => {
     const ref = useRef(null);
 
     useEffect(() => {
         if (!ref.current) return;
 
         const element = ref.current;
-        element.innerHTML = ""; // clear existing content
+        element.innerHTML = "";
 
         const letters = text.split("").map((char) => {
             const span = document.createElement("span");
-            span.textContent = char === " " ? "\u00A0" : char; // preserve spaces
+            span.textContent = char === " " ? "\u00A0" : char;
             span.style.opacity = 0;
             span.style.display = "inline-block";
             span.style.transform = "translateY(20px)";
-            if (style.color) span.style.color = style.color; // <-- apply color
+            if (style.color) span.style.color = style.color;
             element.appendChild(span);
             return span;
         });
@@ -34,7 +34,7 @@ const SplitText = ({
                 span.style.transform = "translateY(0)";
             }, i * delay * 1000);
         });
-    }, [text, delay, style.color]); // add style.color to dependency
+    }, [text, delay, style.color]);
 
     const Tag = tag;
     return (

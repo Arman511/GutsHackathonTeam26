@@ -48,7 +48,6 @@ export default function DomeGallery({ images = DEFAULT_IMAGES }) {
 
     useEffect(() => {
         if (sphereRef.current) {
-            // Sphere itself stays centered; no translateZ
             sphereRef.current.style.transform = `rotateX(10deg) rotateY(0deg)`;
         }
     }, []);

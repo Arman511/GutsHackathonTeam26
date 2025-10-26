@@ -12,49 +12,42 @@ export default function RateEvent() {
     const [locations, setLocations] = useState([])
     const [loading, setLoading] = useState(true)
 
-        useEffect(() =>{
+    useEffect(() => {
         const loadLocations = async () => {
             try {
                 const response = await getLocationsForEvent(eventId)
-                const locs = response.locations     
+                const locs = response.locations
 
-                // Get users personality type from browser localStorage 
                 const personalityTags = JSON.parse(localStorage.getItem('personality_tags') || '[]')
 
-                // Format locations and calculate match scores
                 let formattedLocations = locs.map(loc => {
-                    // for match between persoalities and events
                     let matchScore = 0;
-                    
-                    if (personalityTags.length > 0) { // Ensures they took quiz
+
+                    if (personalityTags.length > 0) {
 
                         personalityTags.forEach(tag => {
                             const lowerTag = tag.toLowerCase();
-                            
-                            // Adventurous/brave/spontaneous people like outdoor & group activities
+
                             if (['brave', 'adventurous', 'spontaneous', 'chaotic'].includes(lowerTag)) {
                                 if (loc.outdoor) matchScore += 2;
                                 if (loc.group_activity) matchScore += 2;
                             }
-                            
-                            // Social/energetic/lively people like group activities
+
                             if (['social', 'energetic', 'crowd-pleaser', 'entertainer', 'mood-lifter'].includes(lowerTag)) {
                                 if (loc.group_activity) matchScore += 2;
                             }
-                            
-                            // Introverted/quiet/homebody people prefer indoor, NOT group
+
                             if (['introverted', 'homebody', 'quiet', 'shy', 'observer'].includes(lowerTag)) {
                                 if (!loc.outdoor) matchScore += 1;
                                 if (!loc.group_activity) matchScore += 1;
                             }
-                            
-                            // Food lovers like food venues
+
                             if (['indulgent', 'extra'].includes(lowerTag)) {
                                 if (loc.food || loc.drinks) matchScore += 1;
                             }
                         });
                     }
-                    
+
                     return {
                         id: loc.id,
                         title: loc.location,
@@ -65,13 +58,12 @@ export default function RateEvent() {
                         image: getLocationEmoji(loc),
                         secondaryImage: "📍",
                         review: loc.google_rating ? `Google Rating: ${loc.google_rating}/5.0 ⭐` : "No reviews yet",
-                        matchScore: matchScore // Store the score 
+                        matchScore: matchScore
                     };
                 });
 
-                // Sort by match score (highest first) if user has taken quiz
                 if (personalityTags.length > 0) {
-                    formattedLocations.sort((a, b) => b.matchScore - a.matchScore); //if diff is positive, b is higher, else a is higher
+                    formattedLocations.sort((a, b) => b.matchScore - a.matchScore);
                     console.log('Locations sorted by personality match!', personalityTags);
                 }
 
@@ -111,7 +103,7 @@ export default function RateEvent() {
         );
     }
 
-        if (locations.length === 0) {
+    if (locations.length === 0) {
         return (
             <BackgroundWrapper>
                 <Box display="flex" alignItems="center" justifyContent="center" minHeight="100vh" p={3}>
@@ -151,13 +143,13 @@ function getLocationEmoji(location) {
 
 function getLocationTags(location) {
     const tags = [];
-    
+
     if (location.outdoor) tags.push('Outdoor');
     if (location.food) tags.push('Food');
     if (location.drinks) tags.push('Drinks');
     if (location.group_activity) tags.push('Group Activity');
     if (location.accessible) tags.push('Accessible');
     if (location.vegetarian) tags.push('Vegetarian');
-    
+
     return tags.length > 0 ? tags.join(', ') : 'Activity';
 }

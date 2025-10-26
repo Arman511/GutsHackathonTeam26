@@ -22,7 +22,7 @@ const quizQuestions = [
             { text: "Close to family", tags: ["wise", "thoughtful", "cryptic"] },
             { text: "Anywhere with hiking", tags: ["chaotic", "lovable", "disaster"] },
             { text: "Near a forest", tags: ["chaotic", "lovable", "disaster"] }
-            
+
         ]
     },
     {
@@ -91,7 +91,7 @@ function PersonalityQuiz({ onComplete }) {
         setAnswers([...answers, option.text])
 
         setSelectedTags([...selectedTags, ...option.tags])
-        
+
         if (currentQuestion < quizQuestions.length - 1) {
             setCurrentQuestion(currentQuestion + 1)
         } else {
@@ -101,17 +101,16 @@ function PersonalityQuiz({ onComplete }) {
 
     const finishQuiz = () => {
 
-        // A way tocount how many times a tag appears
         const tagCounts = {}
         selectedTags.forEach(tag => {
             tagCounts[tag] = (tagCounts[tag] || 0) + 1
         })
 
 
-        const topTags = Object.entries(tagCounts) // Creates key value pairs
-            .sort((a, b) => b[1] - a[1]) // Sorts in Descnding order: if diff is positive, b is higher, else a is higher
-            .slice(0, 5) // Returns top 5
-            .map(entry => entry[0]) // Returns tags only
+        const topTags = Object.entries(tagCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(entry => entry[0])
 
         console.log("User's personality tags:", topTags)
 
@@ -121,7 +120,7 @@ function PersonalityQuiz({ onComplete }) {
     const question = quizQuestions[currentQuestion]
 
     return (
-         <div className="quiz-overlay">
+        <div className="quiz-overlay">
             <div className="quiz-container">
                 <div className="quiz-progress">
                     Question {currentQuestion + 1} of {quizQuestions.length}
