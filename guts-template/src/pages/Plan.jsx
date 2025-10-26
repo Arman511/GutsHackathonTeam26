@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
 import { getUsers } from "../api/api";
+import { createEvent, addUsersToEvent } from "../api/api"; // adjust path if needed
 
 // Add this above your Plan component or import it if you already have it
 function Bubble({ name, onRemove }) {
@@ -32,6 +33,10 @@ export default function Plan() {
     const [preferences, setPreferences] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [suggestedUsers, setSuggestedUsers] = useState([]);
+    const [description, setDescription] = useState("");
+    const [eventName, setEventName] = useState("");
+    const [openTime, setOpenTime] = useState("");
+    const [closeTime, setCloseTime] = useState("");
 
     const allPreferences = [
         "Outdoor",
@@ -94,51 +99,76 @@ export default function Plan() {
         );
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Checking for input
-        if (!participantInput.length) {
-            alert("Please add at least one person")
-            return
-        }
-        if (!priceRange) {
-            alert("Please add price range!!!!")
-            return
-        }
-        if (!date) {
-            alert("DATEEEEE")
-            return
-        }
+        // Map participant usernames to user IDs
+        const participantIds = participants
+            .map(username => {
+                const user = allUsers.find(u => u.username === username);
+                return user ? user.id : null;
+            })
+            .filter(id => id !== null);
+
+        // Prepare event data
+        const eventData = {
+            event_name: eventName, // replace with your form field
+            event_date: date,
+            description: description, // replace with your form field
+            price_range: priceRange,
+            outdoor: preferences.includes("Outdoor"),
+            group_activity: preferences.includes("Group Activity"),
+            vegetarian: preferences.includes("Vegetarian Friendly"),
+            drinks: preferences.includes("Drinks"),
+            food: preferences.includes("Food Available"),
+            accessible: disabilityAccess,
+            formal_attire: preferences.includes("Formal Attire"),
+            open_time: time,
+            close_time: time,
+        };
 
         try {
-            const eventData = {
-                event_name: `Tea Event - ${date}`, // maybe add a name section?
-                event_date: date,
-                description: `Event with ${participants.join(', ')}. Preferences: ${preferences.join(', ')}`,
-                price_range: priceRange,
-                outdoor: preferences.includes("Outdoor"),
-                participant_ids: []
-            }
-            await createEvent(eventData)
+            // 1. Create the event
+            const eventRes = await createEvent(eventData);
+            const eventId = eventRes.event_id || eventRes.id; // adjust based on backend response
 
-            console.log("Event JSON:", JSON.stringify(eventData, null, 2));
-            alert("Event planned successfully! Redirecting to home...");
+            // 2. Add users to event
+            await addUsersToEvent(eventId, { user_ids: participantIds });
+
+            alert("Event created and participants added!");
             navigate("/home");
-        } catch (error) {
-            alert("omething went wrong, please try again!!")
-            console.log(error)
+        } catch (err) {
+            alert("Error: " + err.message);
         }
-
     };
-
-
 
     return (
         <BackgroundWrapper>
             <div className="plan-container">
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
+                    <div className="form-group">
+                        <label>Event Name:</label>
+                        <input
+                            type="text"
+                            value={eventName}
+                            onChange={(e) => setEventName(e.target.value)}
+                            required
+                            placeholder="Enter event name"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Description:</label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            placeholder="Enter event description"
+                            rows={2}
+                            style={{ width: "100%", borderRadius: "8px", padding: "6px", border: "1px solid #ccc" }}
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Participants:</label>
                         <div
@@ -206,7 +236,6 @@ export default function Plan() {
                             </div>
                         </div>
                     )}
-                    
                 </div>
                     <div className="form-group">
                         <label>Price Range:</label>
@@ -233,17 +262,24 @@ export default function Plan() {
                             required
                         />
                     </div>
-
                     <div className="form-group">
-                        <label>Time:</label>
+                        <label>Open Time:</label>
                         <input
                             type="time"
-                            value={time}
-                            onChange={(e) => setTime(e.target.value)}
+                            value={openTime}
+                            onChange={(e) => setOpenTime(e.target.value)}
                             required
                         />
                     </div>
-
+                    <div className="form-group">
+                        <label>Close Time:</label>
+                        <input
+                            type="time"
+                            value={closeTime}
+                            onChange={(e) => setCloseTime(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Preferences:</label>
                         <div className="preferences-container">

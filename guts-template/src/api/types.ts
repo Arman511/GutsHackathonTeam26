@@ -1,7 +1,6 @@
 export type CreateEventRequest = {
     event_name: string
     event_date: string
-    location: number
     description: string
     price_range: string
     outdoor: boolean
