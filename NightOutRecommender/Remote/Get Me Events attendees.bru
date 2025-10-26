@@ -1,0 +1,33 @@
+meta {
+  name: Get Me Events attendees
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://nos.armandev.co.uk/api/events/event_attendees/1
+  body: none
+  auth: oauth2
+}
+
+auth:oauth2 {
+  grant_type: password
+  access_token_url: https://nos.armandev.co.uk/api/auth/token
+  refresh_token_url: 
+  username: arman
+  password: arman
+  client_id: 1234
+  client_secret: 
+  scope: 
+  credentials_placement: body
+  credentials_id: credentials
+  token_placement: header
+  token_header_prefix: Bearer
+  auto_fetch_token: true
+  auto_refresh_token: false
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
