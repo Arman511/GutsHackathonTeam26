@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
@@ -18,27 +18,56 @@ export default function Plan() {
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [preferences, setPreferences] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    const [suggestedUsers, setSuggestedUsers] = useState([]);
 
     const allPreferences = [
         "Outdoor",
         "Indoor",
         "Quiet",
+        "Group Activity",
         "Lively",
         "Food Included",
         "Drinks",
         "Vegetarian Friendly",
         "Pet Friendly",
-        "Adventure",
-        "Alcohol-free"
+        "Formal Attire",
     ];
 
-    const handleAddParticipant = (e) => {
-        e.preventDefault();
-        const trimmed = participantInput.trim();
-        if (trimmed && !participants.includes(trimmed)) {
-            setParticipants([...participants, trimmed]);
+    useEffect(async () => {
+        // Fetch all users from backend
+        const response = await getUsers();
+        if (response.ok) {
+            const data = await response.json();
+            setAllUsers(data);
+        } else {
+            console.error("Failed to fetch users:", response.statusText);
+        }
+    }, []);
+
+    useEffect(() => {
+        // Update suggestions as user types
+        if (participantInput.trim() === "") {
+            setSuggestedUsers([]);
+        } else {
+            setSuggestedUsers(
+                allUsers.filter(
+                    user =>
+                        user.username
+                            .toLowerCase()
+                            .includes(participantInput.trim().toLowerCase()) &&
+                        !participants.includes(user.username)
+                )
+            );
+        }
+    }, [participantInput, allUsers, participants]);
+
+    const handleAddParticipant = (name) => {
+        if (name && !participants.includes(name)) {
+            setParticipants([...participants, name]);
         }
         setParticipantInput("");
+        setSuggestedUsers([]);
     };
 
     const handleRemoveParticipant = (name) => {
@@ -74,30 +103,49 @@ export default function Plan() {
 
     return (
         <BackgroundWrapper>
+
+            <div>
+                <h3>All Usernames from API:</h3>
+                <ul>
+                    {allUsers.map(user => (
+                    <li key={user.id}>{user.username}</li>
+                    ))}
+                </ul>
+            </div>
+
             <div className="plan-container">
                 <h1>Plan an Event</h1>
-                <form onSubmit={handleSubmit} className="plan-form">
-                    {/* Participants Input */}
-                    <div className="form-group">
+                    <form onSubmit={handleSubmit} className="plan-form">
+                        {/* Participants Input */}
+                        <div className="form-group">
                         <label>Participants:</label>
                         <div className="participant-input-container">
                             <input
                                 type="text"
-                                placeholder="Type a name and press Enter"
+                                placeholder="Type a username"
                                 value={participantInput}
                                 onChange={(e) => setParticipantInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddParticipant(e);
-                                }}
                             />
                         </div>
+                        {/* Suggested bubbles */}
+                        <div className="suggested-bubbles">
+                            {suggestedUsers.map(user => (
+                                <span
+                                    key={user.id}
+                                    className="bubble suggested"
+                                    onClick={() => handleAddParticipant(user.username)}
+                                >
+                                    {user.username}
+                                </span>
+                            ))}
+                        </div>
+                        {/* Selected participant bubbles */}
                         <div className="participant-bubbles">
                             {participants.map((p) => (
                                 <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
                             ))}
                         </div>
                     </div>
-
                     {/* Price Range */}
                     <div className="form-group">
                         <label>Price Range:</label>
