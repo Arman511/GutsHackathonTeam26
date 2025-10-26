@@ -19,8 +19,10 @@ export default function Agenda() {
     useEffect(() => {
         const loadEvents = async () => {
             try {
-                const events = await getCreatedEvents();
-                setMyEvents(events);
+                const response = await getCreatedEvents();
+
+                const events = response.events || response || []
+                setMyEvents(events)
                 if (events.length > 0) {
                     setSelectedEventId(events[0].id);
                     loadResults(events[0].id);
@@ -37,11 +39,23 @@ export default function Agenda() {
     const loadResults = async (eventId) => {
         setResultsLoading(true);
         try {
-            const results = await getEventResult(eventId);
-            setEventResults(results);
+            const response = await getEventResult(eventId);
+            console.log('Results response:', response)
+
+            if (response.ranked_locations) {
+                setEventResults({
+                    locations: response.ranked_locations.map(([locationId, avgScore]) => ({
+                        location_id: locationId,
+                        location_name: `Location ${locationId}`,
+                        average_ranking: avgScore
+                    }))
+                });
+            } else {
+                setEventResults({ locations: [] });
+            }
         } catch (error) {
             console.error('Error loading results:', error);
-            setEventResults(null);
+            setEventResults({ locations: [] });
         } finally {
             setResultsLoading(false);
         }
@@ -228,7 +242,6 @@ export default function Agenda() {
                                 ))}
                             </Stack>
 
-                            {/* Recommendation */}
                             {locations[0]?.average_ranking && (
                                 <Card sx={{ mt: 4, bgcolor: 'primary.main', color: 'white', p: 3 }}>
                                     <Typography variant="h5" gutterBottom fontWeight="bold">

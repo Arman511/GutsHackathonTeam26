@@ -90,7 +90,6 @@ export default function RateEvent() {
             for (const [locationId, rating] of Object.entries(ratings)) {
                 await rankLocation({
                     location_id: parseInt(locationId),
-                    event_id: parseInt(eventId),
                     ranking: rating
                 })
             }
