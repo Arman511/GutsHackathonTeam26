@@ -4,6 +4,23 @@ import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
 import { getUsers } from "../api/api";
 
+// Add this above your Plan component or import it if you already have it
+function Bubble({ name, onRemove }) {
+    return (
+        <span className="bubble">
+            {name}
+            <button
+                type="button"
+                className="bubble-remove"
+                onClick={() => onRemove(name)}
+                aria-label={`Remove ${name}`}
+            >
+                ×
+            </button>
+        </span>
+    );
+}
+
 export default function Plan() {
     const navigate = useNavigate();
     const [participants, setParticipants] = useState([]);
@@ -123,17 +140,39 @@ export default function Plan() {
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
                     <div className="form-group">
-                    <label>Participants:</label>
-                    <div className="participant-input-container">
-                        <input
-                            type="text"
-                            placeholder="Type a username"
-                            value={participantInput}
-                            onChange={(e) => setParticipantInput(e.target.value)}
-                        />
-                    </div>
-                    {/* Matching users as clickable bubbles */}
-                    {participantInput.trim() && (
+                        <label>Participants:</label>
+                        <div
+                            className="participant-input-container"
+                            style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                alignItems: "center",
+                                minHeight: "40px",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                padding: "6px"
+                            }}
+                        >
+                            {/* Render participant bubbles inside the input container */}
+                            {participants.map((p) => (
+                                <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
+                            ))}
+                            <input
+                                type="text"
+                                placeholder="Type a username"
+                                value={participantInput}
+                                onChange={(e) => setParticipantInput(e.target.value)}
+                                style={{
+                                    border: "none",
+                                    outline: "none",
+                                    flex: "1",
+                                    minWidth: "120px",
+                                    marginLeft: "4px"
+                                }}
+                            />
+                        </div>
+                        {/* Matching users as clickable bubbles */}
+                        {participantInput.trim() && (
                         <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
                             <label>Matching Users:</label>
                             <div>
@@ -143,33 +182,31 @@ export default function Plan() {
                                             .toLowerCase()
                                             .includes(participantInput.trim().toLowerCase()) &&
                                         !participants.includes(user.username)
+                                    ).length === 0 ? (
+                                        <span style={{ color: "#888", fontStyle: "italic" }}>none</span>
+                                    ) : (
+                                        allUsers
+                                            .filter(user =>
+                                                user.username
+                                                    .toLowerCase()
+                                                    .includes(participantInput.trim().toLowerCase()) &&
+                                                !participants.includes(user.username)
+                                            )
+                                            .map(user => (
+                                                <span
+                                                    key={user.id}
+                                                    className="bubble"
+                                                    onClick={() => handleAddParticipant(user.username)}
+                                                >
+                                                    {user.username}
+                                                </span>
+                                            ))
                                     )
-                                    .map(user => (
-                                        <span
-                                            key={user.id}
-                                            className="bubble"
-                                            style={{
-                                                display: "inline-block",
-                                                margin: "4px",
-                                                padding: "6px 12px",
-                                                borderRadius: "16px",
-                                                background: "#e0e0e0",
-                                                cursor: "pointer"
-                                            }}
-                                            onClick={() => handleAddParticipant(user.username)}
-                                        >
-                                            {user.username}
-                                        </span>
-                                    ))}
+                                }
                             </div>
                         </div>
                     )}
-                    {/* Participant bubbles */}
-                    <div className="participant-bubbles">
-                        {participants.map((p) => (
-                            <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
-                        ))}
-                    </div>
+                    
                 </div>
                     <div className="form-group">
                         <label>Price Range:</label>

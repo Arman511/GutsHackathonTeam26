@@ -141,3 +141,30 @@ h1 {
     color: white;
     text-decoration: underline;
 }
+
+.bubble {
+    display: inline-flex;
+    align-items: center;
+    margin: 2px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background-color: #ffffff33;
+    color: black;
+    border: 2px solid #0088cc;
+    font-size: 0.95em;
+    height: 28px;
+    line-height: 24px;
+    cursor: default;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.bubble-remove {
+    margin-left: 6px;
+    background: transparent;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+    line-height: 1;
+}
