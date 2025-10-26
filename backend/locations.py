@@ -228,7 +228,7 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
     event_config = db.execute(
         text(
             """
-        SELECT * FROM "EventsInfo" WHERE event_id = :event_id
+        SELECT * FROM "EventsInfo" WHERE id = :event_id
         """
         ),
         {"event_id": event_id},
