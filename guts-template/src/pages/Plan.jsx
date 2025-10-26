@@ -124,7 +124,6 @@ export default function Plan() {
             <div className="plan-container">
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
-                    {/* Participants Input */}
                     <div className="form-group">
                         <label>Participants:</label>
                         <div className="participant-input-container">
