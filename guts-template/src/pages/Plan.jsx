@@ -24,14 +24,16 @@ export default function Plan() {
     const [preferences, setPreferences] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [suggestedUsers, setSuggestedUsers] = useState([]);
+    const [description, setDescription] = useState("");
+    const [eventName, setEventName] = useState("");
+    const [openTime, setOpenTime] = useState("");
+    const [closeTime, setCloseTime] = useState("");
 
     const allPreferences = [
         "Outdoor",
         "Indoor",
-        "Quiet",
         "Group Activity",
-        "Lively",
-        "Food Included",
+        "Food Available",
         "Drinks",
         "Vegetarian Friendly",
         "Pet Friendly",
@@ -88,6 +90,7 @@ export default function Plan() {
         );
     };
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(participants)
@@ -113,14 +116,10 @@ export default function Plan() {
             console.log("Event JSON:", JSON.stringify(eventData, null, 2));
             alert("Event planned successfully! Redirecting to home...");
             navigate("/home");
-        } catch (error) {
-            alert("something went wrong, please try again!!")
-            console.log(error)
+        } catch (err) {
+            alert("Error: " + err.message);
         }
-
     };
-
-
 
     return (
         <BackgroundWrapper>
@@ -128,33 +127,94 @@ export default function Plan() {
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
                     <div className="form-group">
+                        <label>Event Name:</label>
+                        <input
+                            type="text"
+                            value={eventName}
+                            onChange={(e) => setEventName(e.target.value)}
+                            required
+                            placeholder="Enter event name"
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Description:</label>
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            placeholder="Enter event description"
+                            rows={2}
+                            style={{ width: "100%", borderRadius: "8px", padding: "6px", border: "1px solid #ccc" }}
+                        />
+                    </div>
+                    <div className="form-group">
                         <label>Participants:</label>
-                        <div className="participant-input-container">
+                        <div
+                            className="participant-input-container"
+                            style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                alignItems: "center",
+                                minHeight: "40px",
+                                border: "1px solid #ccc",
+                                borderRadius: "8px",
+                                padding: "6px"
+                            }}
+                        >
+                            {/* Render participant bubbles inside the input container */}
+                            {participants.map((p) => (
+                                <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
+                            ))}
                             <input
                                 type="text"
                                 placeholder="Type a username"
                                 value={participantInput}
                                 onChange={(e) => setParticipantInput(e.target.value)}
+                                style={{
+                                    border: "none",
+                                    outline: "none",
+                                    flex: "1",
+                                    minWidth: "120px",
+                                    marginLeft: "4px"
+                                }}
                             />
                         </div>
-                        <div className="suggested-bubbles">
-                            {suggestedUsers.map(user => (
-                                <span
-                                    key={user.id}
-                                    className="bubble suggested"
-                                    onClick={() => handleAddParticipant(user.username)}
-                                >
-                                    {user.username}
-                                </span>
-                            ))}
-                        </div>
-                        <div className="participant-bubbles">
-                            {participants.map((p) => (
-                                <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
-                            ))}
-                        </div>
+                        {/* Matching users as clickable bubbles */}
+                        {participantInput.trim() && (
+                            <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
+                                <label>Matching Users:</label>
+                                <div>
+                                    {allUsers
+                                        .filter(user =>
+                                            user.username
+                                                .toLowerCase()
+                                                .includes(participantInput.trim().toLowerCase()) &&
+                                            !participants.includes(user.username)
+                                        ).length === 0 ? (
+                                        <span style={{ color: "#888", fontStyle: "italic" }}>none</span>
+                                    ) : (
+                                        allUsers
+                                            .filter(user =>
+                                                user.username
+                                                    .toLowerCase()
+                                                    .includes(participantInput.trim().toLowerCase()) &&
+                                                !participants.includes(user.username)
+                                            )
+                                            .map(user => (
+                                                <span
+                                                    key={user.id}
+                                                    className="bubble"
+                                                    onClick={() => handleAddParticipant(user.username)}
+                                                >
+                                                    {user.username}
+                                                </span>
+                                            ))
+                                    )
+                                    }
+                                </div>
+                            </div>
+                        )}
                     </div>
-
                     <div className="form-group">
                         <label>Price Range:</label>
                         <div className="price-buttons">
@@ -171,17 +231,6 @@ export default function Plan() {
                         </div>
                     </div>
 
-                    <div className="form-group checkbox">
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={disabilityAccess}
-                                onChange={(e) => setDisabilityAccess(e.target.checked)}
-                            />
-                            Disability Access Required
-                        </label>
-                    </div>
-
                     <div className="form-group">
                         <label>Date:</label>
                         <input
@@ -191,17 +240,24 @@ export default function Plan() {
                             required
                         />
                     </div>
-
                     <div className="form-group">
-                        <label>Time:</label>
+                        <label>Open Time:</label>
                         <input
                             type="time"
-                            value={time}
-                            onChange={(e) => setTime(e.target.value)}
+                            value={openTime}
+                            onChange={(e) => setOpenTime(e.target.value)}
                             required
                         />
                     </div>
-
+                    <div className="form-group">
+                        <label>Close Time:</label>
+                        <input
+                            type="time"
+                            value={closeTime}
+                            onChange={(e) => setCloseTime(e.target.value)}
+                            required
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Preferences:</label>
                         <div className="preferences-container">
@@ -216,6 +272,17 @@ export default function Plan() {
                                 </button>
                             ))}
                         </div>
+                    </div>
+
+                    <div className="form-group checkbox">
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={disabilityAccess}
+                                onChange={(e) => setDisabilityAccess(e.target.checked)}
+                            />
+                            Disability Access Required
+                        </label>
                     </div>
 
                     <button type="submit" className="submit-btn">

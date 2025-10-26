@@ -1,18 +1,18 @@
 meta {
-  name: Get Me
+  name: Get Me Events attendees
   type: http
-  seq: 5
+  seq: 9
 }
 
 get {
-  url: http://nos.armandev.co.uk/api/locations/all_locations
+  url: http://localhost:8000/api/events/all_events
   body: none
   auth: oauth2
 }
 
 auth:oauth2 {
   grant_type: password
-  access_token_url: https://nos.armandev.co.uk/api/auth/token
+  access_token_url: http://localhost:8000/api/auth/token
   refresh_token_url: 
   username: arman
   password: arman

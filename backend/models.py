@@ -94,6 +94,10 @@ class AttendEventRequest(BaseModel):
     user_id: int
 
 
+class AddUsersToEventRequest(BaseModel):
+    user_ids: list[int]
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
