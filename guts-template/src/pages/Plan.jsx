@@ -113,9 +113,9 @@ export default function Plan() {
 
         // Prepare event data
         const eventData = {
-            event_name: eventName, // replace with your form field
+            event_name: eventName,
             event_date: date,
-            description: description, // replace with your form field
+            description: description,
             price_range: priceRange,
             outdoor: preferences.includes("Outdoor"),
             group_activity: preferences.includes("Group Activity"),
@@ -124,8 +124,8 @@ export default function Plan() {
             food: preferences.includes("Food Available"),
             accessible: disabilityAccess,
             formal_attire: preferences.includes("Formal Attire"),
-            open_time: time,
-            close_time: time,
+            open_time: openTime,
+            close_time: closeTime,
         };
 
         try {
