@@ -39,10 +39,6 @@ export default function Login() {
                     <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
                     <button type="submit">Login</button>
                 </form>
-
-                <button className="skip-button" onClick={handleSkip}>
-                    Skip to Home
-                </button>
             </div>
         </div>
     );
