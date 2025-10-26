@@ -1,11 +1,11 @@
 meta {
   name: Create Event
   type: http
-  seq: 5
+  seq: 2
 }
 
 post {
-  url: http://nos.armandev.co.uk/api/events/create_event
+  url: https://nos.armandev.co.uk/api/events/create_event
   body: json
   auth: oauth2
 }
@@ -31,7 +31,6 @@ body:json {
   {
     "event_name": "Pottery",
     "event_date": "2025-11-10",
-    "location": 11,
     "description": "Let's unwind with some pottery and painting!",
     "price_range": "££",
     "outdoor": false,

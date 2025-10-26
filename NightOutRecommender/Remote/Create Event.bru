@@ -1,18 +1,18 @@
 meta {
-  name: Get locations for event
+  name: Create Event
   type: http
-  seq: 6
+  seq: 2
 }
 
-get {
-  url: http://nos.armandev.co.uk/api/locations/get_locations_for_event/1
-  body: none
+post {
+  url: https://nos.armandev.co.uk/api/events/create_event
+  body: json
   auth: oauth2
 }
 
 auth:oauth2 {
   grant_type: password
-  access_token_url: http://nos.armandev.co.uk/api/auth/token
+  access_token_url: https://nos.armandev.co.uk/api/auth/token
   refresh_token_url: 
   username: arman
   password: arman
@@ -31,7 +31,6 @@ body:json {
   {
     "event_name": "Pottery",
     "event_date": "2025-11-10",
-    "location": 10,
     "description": "Let's unwind with some pottery and painting!",
     "price_range": "££",
     "outdoor": false,
