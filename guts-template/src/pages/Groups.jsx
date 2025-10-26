@@ -96,7 +96,8 @@ export default function Groups() {
                     {myEvents.map((event) => (
                         <Card
                             key={event.id}
-                            onClick={() => navigate(`/rate-event/${event.id}`)}
+                            onClick={() => 
+                                navigate(`/rate-event/${event.id}`)}
                             sx={{
                                 cursor: 'pointer',
                                 transition: 'all 0.3s',

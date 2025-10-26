@@ -57,20 +57,6 @@ export default function Plan() {
     const handleSubmit = async  (e) => {
         e.preventDefault();
 
-        // Checking for input
-        if (!participantInput.length) {
-            alert("Please add at least one person")
-            return 
-        }
-        if (!priceRange) {
-            alert("Please add price range!!!!")
-            return 
-        }
-        if (!date) {
-            alert("DATEEEEE")
-            return
-        }
-
         try {
             const eventData = {
                 event_name: `Team Event - ${date}`,
@@ -106,7 +92,6 @@ export default function Plan() {
             <div className="plan-container">
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
-                    {/* Participants Input */}
                     <div className="form-group">
                         <label>Participants:</label>
                         <div className="participant-input-container">
@@ -127,7 +112,6 @@ export default function Plan() {
                         </div>
                     </div>
 
-                    {/* Price Range */}
                     <div className="form-group">
                         <label>Price Range:</label>
                         <div className="price-buttons">
@@ -144,7 +128,6 @@ export default function Plan() {
                         </div>
                     </div>
 
-                    {/* Disability Access */}
                     <div className="form-group checkbox">
                         <label>
                             <input
@@ -156,7 +139,6 @@ export default function Plan() {
                         </label>
                     </div>
 
-                    {/* Date and Time */}
                     <div className="form-group">
                         <label>Date:</label>
                         <input
@@ -177,7 +159,6 @@ export default function Plan() {
                         />
                     </div>
 
-                    {/* Preferences */}
                     <div className="form-group">
                         <label>Preferences:</label>
                         <div className="preferences-container">
