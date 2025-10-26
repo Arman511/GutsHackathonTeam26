@@ -36,23 +36,23 @@ def build_location_filters(filters: dict):
         if value is None:
             continue
 
-        if field == "keywords":
-            # keywords stored separately; build EXISTS subquery matching any keyword
-            if isinstance(value, (list, tuple)) and value:
-                keyword_preds = []
-                for idx, keyword in enumerate(value):
-                    key = f"keyword_{idx}"
-                    keyword_preds.append(f"k.keyword ILIKE :{key}")
-                    params[key] = f"%{keyword}%"
-                exists_sub = (
-                    'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
-                    'JOIN "Keywords" k ON k.id = lk.keyword_id '
-                    'WHERE lk.location_id = "LocationInfo".id AND ('
-                    + " OR ".join(keyword_preds)
-                    + "))"
-                )
-                conditions.append(exists_sub)
-            continue
+        # if field == "keywords":
+        #     # keywords stored separately; build EXISTS subquery matching any keyword
+        #     if isinstance(value, (list, tuple)) and value:
+        #         keyword_preds = []
+        #         for idx, keyword in enumerate(value):
+        #             key = f"keyword_{idx}"
+        #             keyword_preds.append(f"k.keyword ILIKE :{key}")
+        #             params[key] = f"%{keyword}%"
+        #         exists_sub = (
+        #             'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
+        #             'JOIN "Keywords" k ON k.id = lk.keyword_id '
+        #             'WHERE lk.location_id = "LocationInfo".id AND ('
+        #             + " OR ".join(keyword_preds)
+        #             + "))"
+        #         )
+        #         conditions.append(exists_sub)
+        #     continue
 
         if field in ["location", "description", "address"]:
             conditions.append(f"{field} ILIKE :{field}")
