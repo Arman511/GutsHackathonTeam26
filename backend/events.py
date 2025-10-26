@@ -35,7 +35,6 @@ async def get_all_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -60,7 +59,6 @@ async def get_event(event_id: int, user: user_dependency, db: db_dependency):
         "id": event.id,
         "event_name": event.event_name,
         "event_date": event.event_date,
-        "location": event.location,
         "description": event.description,
     }
     return {"event": formatted_event}
@@ -84,7 +82,6 @@ async def get_event_details(event_id: int, user: user_dependency, db: db_depende
         "id": event.id,
         "event_name": event.event_name,
         "event_date": event.event_date,
-        "location": event.location,
         "description": event.description,
         "price_range": event.price_range,
         "outdoor": event.outdoor,
@@ -124,7 +121,6 @@ async def get_attending_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -153,7 +149,6 @@ async def get_created_events(user: user_dependency, db: db_dependency):
                 "id": event.id,
                 "event_name": event.event_name,
                 "event_date": event.event_date,
-                "location": event.location,
                 "description": event.description,
             }
         )
@@ -171,7 +166,6 @@ async def create_event(
         user_id=user_id,
         event_name=event_data.event_name,
         event_date=event_data.event_date,
-        location=event_data.location,
         description=event_data.description,
         price_range=event_data.price_range,
         outdoor=event_data.outdoor,
