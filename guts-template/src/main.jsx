@@ -12,6 +12,9 @@ let accessToken = null;
 
 export function setAccessToken(token) {
     accessToken = token;
+    localStorage.setItem("access_token", token);
+    const expirationTime = Date.now() + 20 * 60 * 1000; // 20 minutes from now
+    localStorage.setItem("access_token_expiration", expirationTime);
 }
 
 export function getAccessToken() {

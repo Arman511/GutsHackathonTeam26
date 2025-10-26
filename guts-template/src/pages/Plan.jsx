@@ -121,16 +121,6 @@ export default function Plan() {
 
     return (
         <BackgroundWrapper>
-
-            <div>
-                <h3>All Usernames from API:</h3>
-                <ul>
-                    {allUsers.map(user => (
-                        <li key={user.id}>{user.username}</li>
-                    ))}
-                </ul>
-            </div>
-
             <div className="plan-container">
                 <h1>Plan an Event</h1>
                 <form onSubmit={handleSubmit} className="plan-form">
@@ -145,7 +135,6 @@ export default function Plan() {
                                 onChange={(e) => setParticipantInput(e.target.value)}
                             />
                         </div>
-                        {/* Suggested bubbles */}
                         <div className="suggested-bubbles">
                             {suggestedUsers.map(user => (
                                 <span
@@ -157,14 +146,12 @@ export default function Plan() {
                                 </span>
                             ))}
                         </div>
-                        {/* Selected participant bubbles */}
                         <div className="participant-bubbles">
                             {participants.map((p) => (
                                 <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
                             ))}
                         </div>
                     </div>
-                    {/* Price Range */}
                     <div className="form-group">
                         <label>Price Range:</label>
                         <div className="price-buttons">
@@ -181,7 +168,6 @@ export default function Plan() {
                         </div>
                     </div>
 
-                    {/* Disability Access */}
                     <div className="form-group checkbox">
                         <label>
                             <input
@@ -193,7 +179,6 @@ export default function Plan() {
                         </label>
                     </div>
 
-                    {/* Date and Time */}
                     <div className="form-group">
                         <label>Date:</label>
                         <input
@@ -214,7 +199,6 @@ export default function Plan() {
                         />
                     </div>
 
-                    {/* Preferences */}
                     <div className="form-group">
                         <label>Preferences:</label>
                         <div className="preferences-container">
