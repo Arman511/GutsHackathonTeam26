@@ -19,6 +19,90 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 location_router = APIRouter(prefix="/locations", tags=["locations"])
 
 
+def build_location_filters(filters: dict):
+    """Return (conditions_list, params) for given filter dict.
+
+    - text fields (location, description, address) use ILIKE %%value%%
+    - boolean fields: False means "no preference" (skip); True filters to True
+    - open_time: location.open_time <= provided
+    - close_time: location.close_time >= provided
+    - google_rating: >=
+    - price_range: exact match
+    - keywords: list -> EXISTS subquery against LocationKeywords/Keywords (ANY match)
+    """
+    conditions = []
+    params = {}
+    for field, value in filters.items():
+        if value is None:
+            continue
+
+        if field == "keywords":
+            # keywords stored separately; build EXISTS subquery matching any keyword
+            if isinstance(value, (list, tuple)) and value:
+                keyword_preds = []
+                for idx, keyword in enumerate(value):
+                    key = f"keyword_{idx}"
+                    keyword_preds.append(f"k.keyword ILIKE :{key}")
+                    params[key] = f"%{keyword}%"
+                exists_sub = (
+                    'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
+                    'JOIN "Keywords" k ON k.id = lk.keyword_id '
+                    'WHERE lk.location_id = "LocationInfo".id AND ('
+                    + " OR ".join(keyword_preds)
+                    + "))"
+                )
+                conditions.append(exists_sub)
+            continue
+
+        if field in ["location", "description", "address"]:
+            conditions.append(f"{field} ILIKE :{field}")
+            params[field] = f"%{value}%"
+            continue
+
+        if field in [
+            "outdoor",
+            "group_activity",
+            "vegetarian",
+            "drinks",
+            "food",
+            "accessible",
+            "reservation_needed",
+            "pet_friendly",
+        ]:
+            if value is False:
+                # False means no preference: don't filter on this field
+                continue
+            conditions.append(f"{field} IS :{field}")
+            params[field] = value
+            continue
+
+        if field in ["open_time", "close_time"]:
+            # assume "HH:MM" string format; lexical compare works for zero-padded times
+            if field == "open_time":
+                conditions.append(f"open_time <= :open_time")
+                params["open_time"] = value
+            else:
+                conditions.append(f"close_time >= :close_time")
+                params["close_time"] = value
+            continue
+
+        if field == "google_rating":
+            conditions.append(f"google_rating >= :google_rating")
+            params[field] = value
+            continue
+
+        if field == "price_range":
+            conditions.append(f"price_range = :price_range")
+            params[field] = value
+            continue
+
+        # default equality
+        conditions.append(f"{field} = :{field}")
+        params[field] = value
+
+    return conditions, params
+
+
 @location_router.get("/all_locations", status_code=status.HTTP_200_OK)
 async def get_all_locations(user: user_dependency, db: db_dependency):
     if user is None:
@@ -128,40 +212,13 @@ async def search_locations(
 ):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")
-    sql = """SELECT * FROM "LocationInfo" WHERE """
-    conditions = []
-    params = {}
-    for field, value in query.model_dump().items():
-        if value is None:
-            continue
-
-        if field == "keywords":
-            # keywords are stored in a separate table linked via LocationKeywords.
-            # build an EXISTS subquery that matches any of the provided keywords.
-            keyword_preds = []
-            for idx, keyword in enumerate(value):
-                key = f"keyword_{idx}"
-                keyword_preds.append(f"k.keyword ILIKE :{key}")
-                params[key] = f"%{keyword}%"
-            if keyword_preds:
-                exists_sub = (
-                    'EXISTS (SELECT 1 FROM "LocationKeywords" lk '
-                    'JOIN "Keywords" k ON k.id = lk.keyword_id '
-                    'WHERE lk.location_id = "LocationInfo".id AND ('
-                    + " OR ".join(keyword_preds)
-                    + "))"
-                )
-                conditions.append(exists_sub)
-            continue
-
-        # default equality filter for other fields
-        conditions.append(f"{field} = :{field}")
-        params[field] = value
+    # build conditions and params using the shared helper
+    conditions, params = build_location_filters(query.model_dump())
     if not conditions:
         raise HTTPException(
             status_code=400, detail="At least one search parameter must be provided"
         )
-    sql += " AND ".join(conditions)
+    sql = """SELECT * FROM "LocationInfo" WHERE """ + " AND ".join(conditions)
     locations = db.execute(text(sql), params).fetchall()
     formatted_locations = []
     for location in locations:
@@ -261,12 +318,14 @@ def get_locations_for_event(event_id: int, user: user_dependency, db: db_depende
         "accessible": event_config.accessible,
         "formal_attire": event_config.formal_attire,
     }
-    where_clauses = []
-    for key, value in formatted_event_config.items():
-        if value is not None:
-            where_clauses.append(f"{key} = {value}")
-    sql = """SELECT * FROM "LocationInfo" WHERE """ + " AND ".join(where_clauses)
-    locations = db.execute(text(sql), formatted_event_config).fetchall()
+    # reuse the same filter builder so event filtering matches search behavior
+    conditions, params = build_location_filters(formatted_event_config)
+    if not conditions:
+        raise HTTPException(
+            status_code=400, detail="No criteria found for event filtering"
+        )
+    sql = """SELECT * FROM "LocationInfo" WHERE """ + " AND ".join(conditions)
+    locations = db.execute(text(sql), params).fetchall()
     if not locations:
         raise HTTPException(
             status_code=404, detail="No locations found matching event criteria"
