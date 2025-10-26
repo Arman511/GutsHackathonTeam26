@@ -307,7 +307,7 @@ async def remove_user_from_event(
     return {"message": "User removed from event successfully"}
 
 
-@event_router.delete("/delete_event/{event_id}", status_code=status.HTTP_200_OK)
+@event_router.get("/delete_event/{event_id}", status_code=status.HTTP_200_OK)
 async def delete_event(
     event_id: int,
     user: user_dependency,
