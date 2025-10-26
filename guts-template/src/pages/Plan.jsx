@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
+import { getUsers } from "../api/api";
 
 const Bubble = React.memo(({ name, onRemove }) => (
     <span className="bubble" onClick={() => onRemove(name)}>
-    {name} ✕
-  </span>
+        {name} ✕
+    </span>
 ));
 
 export default function Plan() {
@@ -34,15 +35,17 @@ export default function Plan() {
         "Formal Attire",
     ];
 
-    useEffect(async () => {
-        // Fetch all users from backend
-        const response = await getUsers();
-        if (response.ok) {
-            const data = await response.json();
-            setAllUsers(data);
-        } else {
-            console.error("Failed to fetch users:", response.statusText);
-        }
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await getUsers();
+                setAllUsers(response.users);
+            } catch (error) {
+                console.error("Failed to fetch users:", error);
+            }
+        };
+
+        fetchUsers();
     }, []);
 
     useEffect(() => {
@@ -108,16 +111,16 @@ export default function Plan() {
                 <h3>All Usernames from API:</h3>
                 <ul>
                     {allUsers.map(user => (
-                    <li key={user.id}>{user.username}</li>
+                        <li key={user.id}>{user.username}</li>
                     ))}
                 </ul>
             </div>
 
             <div className="plan-container">
                 <h1>Plan an Event</h1>
-                    <form onSubmit={handleSubmit} className="plan-form">
-                        {/* Participants Input */}
-                        <div className="form-group">
+                <form onSubmit={handleSubmit} className="plan-form">
+                    {/* Participants Input */}
+                    <div className="form-group">
                         <label>Participants:</label>
                         <div className="participant-input-container">
                             <input
