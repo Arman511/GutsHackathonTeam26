@@ -54,7 +54,11 @@ export async function getMe() {
 // pass in access option opts: RequestInit = {} is a dictoin ops.headers header.auth equals bearer and auth token
 
 export async function createEvent(data: CreateEventRequest) {
-    return loggedInRequest('/api/events/create_event', { method: 'POST', body: JSON.stringify(data) })
+    return loggedInRequest("/api/events/create_event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
 }
 
 export async function addLocation(data: CreateLocationRequest) {

@@ -114,7 +114,7 @@ export default function Plan() {
         // Prepare event data
         const eventData = {
             event_name: eventName,
-            event_date: date,
+            event_date: String(date),
             description: description,
             price_range: priceRange,
             outdoor: preferences.includes("Outdoor"),
@@ -124,9 +124,11 @@ export default function Plan() {
             food: preferences.includes("Food Available"),
             accessible: disabilityAccess,
             formal_attire: preferences.includes("Formal Attire"),
-            open_time: openTime,
-            close_time: closeTime,
+            open_time: String(openTime),
+            close_time: String(closeTime),
         };
+
+        console.log("eventData", eventData);
 
         try {
             // 1. Create the event
