@@ -11,6 +11,9 @@ async function request(path: string, opts: RequestInit = {}, content_type: strin
         const text = await res.text()
         if (res.status === 401) {
             localStorage.removeItem("access_token");
+            if (path === "/api/auth/token") {
+                throw new Error("Unauthorized");
+            }
             window.location.href = "/login";
         }
         console.error('API request failed:', { path, status: res.status, statusText: res.statusText, body: text })
