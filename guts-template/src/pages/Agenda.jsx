@@ -1,150 +1,248 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import "./Agenda.css";
-
-// This should eventually be an API call
-const eventsData = [
-    {
-        id: 1,
-        title: "Marketing goes wild",
-        date: "2025-10-28",
-        group: "Marketing",
-        details: "Marketing team is for a crazy night of drinks",
-        image: "https://image.cnbcfm.com/api/v1/image/104137541-GettyImages-454971061.jpg?v=1529473448"
-    },
-    {
-        id: 2,
-        title: "LED-linquents does SubCrawl",
-        date: "2025-10-30",
-        group: "LaserTag",
-        details: null,
-        image: "https://www.arenasports.net/wp-content/uploads/2025/05/Laser-Tag-22-11-22-ArenaSports-3437-1024x683.jpg"
-    },
-    {
-        id: 3,
-        title: "Halloween trick or treaking",
-        date: "2025-11-05",
-        group: "HR",
-        details: "Lets get together as thirty year olds and go trick or treating",
-        image: "https://www.childcraftbaby.com/wp/wp-content/uploads/2024/10/AdobeStock_383985651-1-1-1536x1024.jpeg"
-    },
-];
-
-const groups = ["Marketing", "Development", "HR", "LaserTag"];
-const times = ["This Week", "This Month", "This Year", "Next Year"];
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { 
+    Container, Card, CardContent, Typography, Button, Box, 
+    Chip, Stack, Grid, CircularProgress 
+} from '@mui/material';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import { getCreatedEvents, getEventResult } from "../api/api";
+import BackgroundWrapper from "./react-bits/BackgroundWrapper";
 
 export default function Agenda() {
-    const [expandedId, setExpandedId] = useState(null);
-    const [selectedGroups, setSelectedGroups] = useState([]);
-    const [selectedTime, setSelectedTime] = useState(null);
+    const navigate = useNavigate();
+    const [myEvents, setMyEvents] = useState([]);
+    const [selectedEventId, setSelectedEventId] = useState(null);
+    const [eventResults, setEventResults] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [resultsLoading, setResultsLoading] = useState(false);
 
-    const toggleExpand = (id) => {
-        setExpandedId(expandedId === id ? null : id);
-    };
+    useEffect(() => {
+        const loadEvents = async () => {
+            try {
+                const events = await getCreatedEvents();
+                setMyEvents(events);
+                if (events.length > 0) {
+                    setSelectedEventId(events[0].id);
+                    loadResults(events[0].id);
+                }
+            } catch (error) {
+                console.error('Error loading events:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadEvents();
+    }, []);
 
-    const toggleGroup = (group) => {
-        if (selectedGroups.includes(group)) {
-            setSelectedGroups(selectedGroups.filter((g) => g !== group));
-        } else {
-            setSelectedGroups([...selectedGroups, group]);
+    const loadResults = async (eventId) => {
+        setResultsLoading(true);
+        try {
+            const results = await getEventResult(eventId);
+            setEventResults(results);
+        } catch (error) {
+            console.error('Error loading results:', error);
+            setEventResults(null);
+        } finally {
+            setResultsLoading(false);
         }
     };
 
-    const selectTime = (time) => {
-        setSelectedTime(selectedTime === time ? null : time);
+    const handleEventSelect = (eventId) => {
+        setSelectedEventId(eventId);
+        loadResults(eventId);
     };
 
-    const filteredEvents = eventsData.filter((event) => {
-        let groupMatch =
-            selectedGroups.length === 0 || selectedGroups.includes(event.group);
+    const getMedal = (index) => {
+        if (index === 0) return '🥇';
+        if (index === 1) return '🥈';
+        if (index === 2) return '🥉';
+        return `#${index + 1}`;
+    };
 
-        let timeMatch = true;
-        const today = new Date();
-        const eventDate = new Date(event.date);
+    if (loading) {
+        return (
+            <BackgroundWrapper>
+                <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                    <CircularProgress size={60} sx={{ color: 'white' }} />
+                </Box>
+            </BackgroundWrapper>
+        );
+    }
 
-        if (selectedTime === "This Week") {
-            const weekEnd = new Date();
-            weekEnd.setDate(today.getDate() + 7);
-            timeMatch = eventDate >= today && eventDate <= weekEnd;
-        } else if (selectedTime === "This Month") {
-            timeMatch =
-                eventDate.getMonth() === today.getMonth() &&
-                eventDate.getFullYear() === today.getFullYear();
-        } else if (selectedTime === "This Year") {
-            timeMatch = eventDate.getFullYear() === today.getFullYear();
-        } else if (selectedTime === "Next Year") {
-            timeMatch = eventDate.getFullYear() === today.getFullYear() + 1;
-        }
+    if (myEvents.length === 0) {
+        return (
+            <BackgroundWrapper>
+                <Box display="flex" alignItems="center" justifyContent="center" minHeight="100vh" p={3}>
+                    <Card sx={{ maxWidth: 500, textAlign: 'center', p: 4 }}>
+                        <Typography variant="h5" gutterBottom fontWeight="bold">
+                            No Events Created
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary" mb={3}>
+                            You haven't created any events yet. Create one to see results!
+                        </Typography>
+                        <Stack direction="row" spacing={2} justifyContent="center">
+                            <Button component={Link} to="/plan" variant="contained" size="large">
+                                Create Event
+                            </Button>
+                            <Button component={Link} to="/home" variant="outlined" size="large">
+                                Back to Home
+                            </Button>
+                        </Stack>
+                    </Card>
+                </Box>
+            </BackgroundWrapper>
+        );
+    }
 
-        return groupMatch && timeMatch;
-    });
+    const locations = eventResults?.locations || [];
 
     return (
-        <div className="agenda-container">
-            <h1>Events Page</h1>
-            <Link to="/home">Home</Link>
+        <BackgroundWrapper>
+            <Container maxWidth="lg" sx={{ py: 5 }}>
+                <Card sx={{ mb: 4, p: 3 }}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                        <Box>
+                            <Typography variant="h3" gutterBottom fontWeight="bold">
+                                Results Dashboard
+                            </Typography>
+                            <Typography variant="h6" color="text.secondary">
+                                See what your team loves
+                            </Typography>
+                        </Box>
+                        <Button component={Link} to="/home" variant="outlined" size="large">
+                            ← Back
+                        </Button>
+                    </Box>
+                </Card>
 
-            {/* Group filters */}
-            <div className="filters">
-                {groups.map((group) => (
-                    <button
-                        key={group}
-                        className={`filter-button ${selectedGroups.includes(group) ? "selected" : ""}`}
-                        onClick={() => toggleGroup(group)}
-                    >
-                        {group}
-                    </button>
-                ))}
-            </div>
+                {myEvents.length > 1 && (
+                    <Card sx={{ mb: 3, p: 2 }}>
+                        <Typography variant="h6" gutterBottom fontWeight="bold">
+                            SELECT EVENT:
+                        </Typography>
+                        <Stack direction="row" spacing={2} flexWrap="wrap">
+                            {myEvents.map(evt => (
+                                <Button
+                                    key={evt.id}
+                                    onClick={() => handleEventSelect(evt.id)}
+                                    variant={selectedEventId === evt.id ? "contained" : "outlined"}
+                                    size="large"
+                                >
+                                    {evt.event_name}
+                                </Button>
+                            ))}
+                        </Stack>
+                    </Card>
+                )}
 
-            {/* Time filters */}
-            <div className="filters">
-                {times.map((time) => (
-                    <button
-                        key={time}
-                        className={`filter-button ${selectedTime === time ? "selected" : ""}`}
-                        onClick={() => selectTime(time)}
-                    >
-                        {time}
-                    </button>
-                ))}
-            </div>
+                <Grid container spacing={3} mb={4}>
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{ border: '3px solid', borderColor: 'error.main', textAlign: 'center', p: 3 }}>
+                            <Typography variant="h2" color="error.main" fontWeight="bold">
+                                {eventResults?.total_attendees || 0}
+                            </Typography>
+                            <Typography variant="h6" color="text.secondary" textTransform="uppercase">
+                                Attendees
+                            </Typography>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{ border: '3px solid', borderColor: 'info.main', textAlign: 'center', p: 3 }}>
+                            <Typography variant="h2" color="info.main" fontWeight="bold">
+                                {eventResults?.users_who_rated || 0}
+                            </Typography>
+                            <Typography variant="h6" color="text.secondary" textTransform="uppercase">
+                                Rated
+                            </Typography>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{ border: '3px solid', borderColor: 'warning.main', textAlign: 'center', p: 3 }}>
+                            <Typography variant="h2" color="warning.main" fontWeight="bold">
+                                {locations.length}
+                            </Typography>
+                            <Typography variant="h6" color="text.secondary" textTransform="uppercase">
+                                Locations
+                            </Typography>
+                        </Card>
+                    </Grid>
+                </Grid>
 
-            {/* Events list */}
-            <div className="events-container">
-                {filteredEvents.map((event) => (
-                    <div key={event.id} className="event-card">
-                        {/* Image on the left */}
-                        {event.image && (
-                            <div className="event-image">
-                                <img src={event.image} alt={event.title} />
-                            </div>
-                        )}
+                <Card sx={{ p: 3 }}>
+                    <Typography variant="h4" gutterBottom fontWeight="bold">
+                        <EmojiEventsIcon sx={{ fontSize: 40, mr: 1, verticalAlign: 'middle' }} />
+                        Location Rankings
+                    </Typography>
 
-                        {/* Event details on the right */}
-                        <div className="event-details">
-                            <div className="event-info">
-                                <h3>{event.title}</h3>
-                                <p>{event.date}</p>
-                                <p>Group: {event.group}</p>
-                            </div>
+                    {resultsLoading ? (
+                        <Box textAlign="center" py={6}>
+                            <CircularProgress />
+                        </Box>
+                    ) : locations.length === 0 ? (
+                        <Box textAlign="center" py={6}>
+                            <Typography variant="h1" mb={2}>⏳</Typography>
+                            <Typography variant="body1" color="text.secondary">
+                                Waiting for team members to rate locations...
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <>
+                            <Stack spacing={3} mt={3}>
+                                {locations.map((location, i) => (
+                                    <Card
+                                        key={location.location_id}
+                                        sx={{
+                                            bgcolor: i === 0 ? 'warning.light' : 'background.paper',
+                                            border: '3px solid',
+                                            borderColor: i === 0 ? 'warning.main' : 'divider',
+                                            boxShadow: i === 0 ? 4 : 1
+                                        }}
+                                    >
+                                        <CardContent sx={{ p: 3 }}>
+                                            <Box display="flex" alignItems="center" gap={3}>
+                                                <Typography variant="h2" sx={{ minWidth: 80, textAlign: 'center' }}>
+                                                    {getMedal(i)}
+                                                </Typography>
+                                                <Box flex={1}>
+                                                    <Typography variant="h5" gutterBottom fontWeight="bold">
+                                                        {location.location_name}
+                                                    </Typography>
+                                                    <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap">
+                                                        <Typography variant="h4" color="primary" fontWeight="bold">
+                                                            {location.average_ranking?.toFixed(1) || 'N/A'}
+                                                        </Typography>
+                                                        {location.average_ranking && (
+                                                            <Typography variant="h5" color="warning.main">
+                                                                {'★'.repeat(Math.round(location.average_ranking))}
+                                                                {'☆'.repeat(5 - Math.round(location.average_ranking))}
+                                                            </Typography>
+                                                        )}
+                                                        <Typography variant="body1" color="text.secondary">
+                                                            ({location.total_rankings || 0} rating{location.total_rankings !== 1 ? 's' : ''})
+                                                        </Typography>
+                                                    </Stack>
+                                                </Box>
+                                            </Box>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </Stack>
 
-                            {/* More info toggle */}
-                            <div className="event-more">
-                                <button onClick={() => toggleExpand(event.id)}>
-                                    {expandedId === event.id ? "🔽 Hide Details" : "▶️ More Info"}
-                                </button>
-
-                                {expandedId === event.id && (
-                                    <div className="event-extra">
-                                        {event.details || "Details not decided yet"}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
+                            {/* Recommendation */}
+                            {locations[0]?.average_ranking && (
+                                <Card sx={{ mt: 4, bgcolor: 'primary.main', color: 'white', p: 3 }}>
+                                    <Typography variant="h5" gutterBottom fontWeight="bold">
+                                        Recommendation
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        Based on ratings, <strong>{locations[0].location_name}</strong> is the clear favorite!
+                                    </Typography>
+                                </Card>
+                            )}
+                        </>
+                    )}
+                </Card>
+            </Container>
+        </BackgroundWrapper>
     );
 }

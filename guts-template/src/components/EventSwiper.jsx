@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 import Rating from '@mui/material/Rating';
 import './EventSwiper.css'
 
 function EventSwiper({ events, onRatingComplete, onClose}) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [rating, setRating] = useState(0)
+    const [allRatings, setAllRatings] = useState({})
 
     const currentEvent = events[currentIndex]
 
     const handleRate = (newRating) => {
         setRating(newRating)
 
-        console.log(`Rated event ${currentEvent.id} with ${newRating} stars`);
+        const updatedRatings = {
+            ...allRatings,
+            [currentEvent.id]: newRating
+        }
+        setAllRatings(updatedRatings)
+
 
         setTimeout(()=> {
             if (currentIndex < events.length-1) {
@@ -20,7 +25,7 @@ function EventSwiper({ events, onRatingComplete, onClose}) {
                 setRating(0)
 
             } else {
-                onRatingComplete()
+                onRatingComplete(updatedRatings)
             }
         }, 500)
     }
@@ -33,7 +38,7 @@ function EventSwiper({ events, onRatingComplete, onClose}) {
     }
 
     return (
-<div className="swiper-overlay">
+        <div className="swiper-overlay">
             <button className="close-btn" onClick={onClose}>X</button>
             
             <div className="progress">{currentIndex + 1} / {events.length}</div>
@@ -46,8 +51,8 @@ function EventSwiper({ events, onRatingComplete, onClose}) {
                     <h2>{currentEvent.title}</h2>
                     
                     <div className="info-box">
-                        <p>📅 {currentEvent.date}</p>
-                        <p>🕐 {currentEvent.time}</p>
+                        <p>{currentEvent.date}</p>
+                        {currentEvent.time && <p> {currentEvent.time}</p>}
                         <p>👥 {currentEvent.group}</p>
                     </div>
 
@@ -63,7 +68,6 @@ function EventSwiper({ events, onRatingComplete, onClose}) {
                     </div>
                 </div>
 
-                {/* Rating at bottom */}
                 <div className="rating-section">
                     <p>How interested are you?</p>
                     <Rating
