@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Box, Typography, Button, Card } from '@mui/material';
 import { getLocationsForEvent, rankLocation } from "../api/api";
-import EventSwiper from "../components/EventSwiper";
-import BackgroundWrapper from "./react-bits/BackgroundWrapper";
+import EventSwiper from "./EventSwiper";
+import BackgroundWrapper from "../pages/react-bits/BackgroundWrapper";
 
 export default function RateEvent() {
     const { eventId } = useParams()
@@ -15,9 +15,10 @@ export default function RateEvent() {
         useEffect(() =>{
         const loadLocations = async () => {
             try {
-                const locs = await getLocationsForEvent(eventId)
+                const response = await getLocationsForEvent(eventId)
+                const locs = response.locations     
 
-                // Get users personality type from browser localStorage
+                // Get users personality type from browser localStorage 
                 const personalityTags = JSON.parse(localStorage.getItem('personality_tags') || '[]')
 
                 // Format locations and calculate match scores
@@ -77,7 +78,7 @@ export default function RateEvent() {
                 setLocations(formattedLocations)
             } catch (error) {
                 console.error(error)
-                navigate('/group')
+                navigate('/groups')
             } finally {
                 setLoading(false)
             }

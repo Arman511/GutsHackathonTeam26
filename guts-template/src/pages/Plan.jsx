@@ -2,21 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 import "./Plan.css";
-import { getUsers } from "../api/api";
-import { createEvent, addUsersToEvent } from "../api/api"; // adjust path if needed
+import { getUsers, createEvent } from "../api/api";
+
 
 function Bubble({ name, onRemove }) {
     return (
-        <span className="bubble">
-            {name}
-            <button
-                type="button"
-                className="bubble-remove"
-                onClick={() => onRemove(name)}
-                aria-label={`Remove ${name}`}
-            >
-                ×
-            </button>
+        <span className="bubble" onClick={() => onRemove(name)}>
+            {name} ✕
         </span>
     );
 }
@@ -101,43 +93,28 @@ export default function Plan() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Map participant usernames to user IDs
-        const participantIds = participants
-            .map(username => {
-                const user = allUsers.find(u => u.username === username);
-                return user ? user.id : null;
-            })
-            .filter(id => id !== null);
-
-        // Prepare event data
-        const eventData = {
-            event_name: eventName,
-            event_date: String(date),
-            description: description,
-            price_range: priceRange,
-            outdoor: preferences.includes("Outdoor"),
-            group_activity: preferences.includes("Group Activity"),
-            vegetarian: preferences.includes("Vegetarian Friendly"),
-            drinks: preferences.includes("Drinks"),
-            food: preferences.includes("Food Available"),
-            accessible: disabilityAccess,
-            formal_attire: preferences.includes("Formal Attire"),
-            open_time: String(openTime),
-            close_time: String(closeTime),
-        };
-
-        console.log("eventData", eventData);
+        console.log(participants)
 
         try {
-            // 1. Create the event
-            const eventRes = await createEvent(eventData);
-            const eventId = eventRes.event_id || eventRes.id; // adjust based on backend response
+            const eventData = {
+                event_name: `Team Event - ${date}`,
+                event_date: date,
+                description: `Event with ${participants.join(', ')}. Preferences: ${preferences.join(', ')}`,
+                price_range: priceRange,
+                outdoor: preferences.includes("Outdoor"),
+                group_activity: true, // Always true for team events
+                vegetarian: preferences.includes("Vegetarian Friendly"),
+                drinks: preferences.includes("Drinks"),
+                food: preferences.includes("Food Included"),
+                accessible: disabilityAccess,
+                formal_attire: false, // Default to false
+                open_time: time, // Use the time from form
+                close_time: "23:59" // Default end time
+            }
+            await createEvent(eventData)
 
-            // 2. Add users to event
-            await addUsersToEvent(eventId, { user_ids: participantIds });
-
-            alert("Event created and participants added!");
+            console.log("Event JSON:", JSON.stringify(eventData, null, 2));
+            alert("Event planned successfully! Redirecting to home...");
             navigate("/home");
         } catch (err) {
             alert("Error: " + err.message);
@@ -184,7 +161,6 @@ export default function Plan() {
                                 padding: "6px"
                             }}
                         >
-                            {/* Render participant bubbles inside the input container */}
                             {participants.map((p) => (
                                 <Bubble key={p} name={p} onRemove={handleRemoveParticipant} />
                             ))}
@@ -202,7 +178,6 @@ export default function Plan() {
                                 }}
                             />
                         </div>
-                        {/* Matching users as clickable bubbles */}
                         {participantInput.trim() && (
                             <div className="matching-user-bubbles" style={{ margin: "10px 0" }}>
                                 <label>Matching Users:</label>
