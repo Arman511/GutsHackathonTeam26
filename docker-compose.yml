@@ -10,7 +10,7 @@ services:
     networks:
       default:
         aliases:
-          - guts-system
+          - gutssystem
 
 networks:
   default:
