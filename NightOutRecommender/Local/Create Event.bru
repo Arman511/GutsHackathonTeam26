@@ -5,14 +5,14 @@ meta {
 }
 
 post {
-  url: https://nos.armandev.co.uk/api/events/create_event
+  url: http://localhost:8000/api/events/create_event
   body: json
   auth: oauth2
 }
 
 auth:oauth2 {
   grant_type: password
-  access_token_url: https://nos.armandev.co.uk/api/auth/token
+  access_token_url: http://localhost:8000/api/auth/token
   refresh_token_url: 
   username: arman
   password: arman

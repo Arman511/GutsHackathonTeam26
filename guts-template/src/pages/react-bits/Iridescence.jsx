@@ -57,7 +57,6 @@ export default function Iridescence({ color = [0, 0.388, 0.827], speed = 0.2, am
         if (!ctnDom.current) return;
         const ctn = ctnDom.current;
 
-        // Create canvas only once
         const canvas = document.createElement('canvas');
         canvasRef.current = canvas;
         ctn.appendChild(canvas);

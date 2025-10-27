@@ -4,7 +4,7 @@ meta {
   seq: 13
 }
 
-get {
+post {
   url: http://localhost:8000/api/locations/user_location_rank
   body: json
   auth: oauth2
@@ -28,10 +28,7 @@ auth:oauth2 {
 }
 
 body:json {
-  {
-    "location_id": 4,
-    "ranking": 3
-  }
+  {"location_id":4,"ranking":4}
 }
 
 settings {

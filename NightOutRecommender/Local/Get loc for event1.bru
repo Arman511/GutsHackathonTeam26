@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: https://nos.armandev.co.uk/api/get_locations_for_event/5
+  url: http://localhost:8000/api/locations/get_locations_for_event/25
   body: none
   auth: oauth2
 }
 
 auth:oauth2 {
   grant_type: password
-  access_token_url: https://nos.armandev.co.uk/api/auth/token
+  access_token_url: http://localhost:8000/api/auth/token
   refresh_token_url: 
   username: arman
   password: arman

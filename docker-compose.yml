@@ -14,5 +14,5 @@ services:
 
 networks:
   default:
-    name: nginx_proxy
+    name: zoraxy_proxy
     external: true
