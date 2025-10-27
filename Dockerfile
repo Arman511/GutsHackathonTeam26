@@ -33,4 +33,6 @@ COPY backend /app/backend
 
 COPY --from=frontend-builder /build/guts-template/dist /app/static
 
+EXPOSE 8000
+
 CMD ["uv", "run", "server.py"]
