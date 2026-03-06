@@ -357,3 +357,5 @@ vite.config.ts.timestamp-*
 package-lock.json
 app_data/
 NightOutRecommender/Remote/
+NightOutRecommender/Remote/
+data/

@@ -26,6 +26,13 @@ elif DB_DIALECT == "sqlite":
         sqlite_db_path = Path(SQLITE_DB_PATH).expanduser().resolve()
         sqlite_db_dir = sqlite_db_path.parent
         sqlite_db_dir.mkdir(parents=True, exist_ok=True)
+        # make file writable, creating if necessary
+        try:
+            sqlite_db_path.touch(exist_ok=True)
+            sqlite_db_path.chmod(0o666)
+        except Exception:
+            # ignore permission errors, container may handle separately
+            pass
         URL_DATABASE = f"sqlite:///{sqlite_db_path}"
 else:
     URL_DATABASE = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"

@@ -23,6 +23,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# ensure data directory exists and is writable for SQLite
+RUN mkdir -p /app/data && chmod 777 /app/data
+
 COPY pyproject.toml /app/
 
 RUN uv sync

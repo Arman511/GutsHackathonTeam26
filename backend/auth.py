@@ -3,7 +3,11 @@ import os
 from typing import Annotated
 import bcrypt
 from fastapi import APIRouter, Depends, HTTPException, Header
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import (
+    APIKeyHeader,
+    OAuth2PasswordBearer,
+    OAuth2PasswordRequestForm,
+)
 from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -16,26 +20,20 @@ from backend.models import CreateUserRequest, Token, Users
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 SECRET_KEY = os.getenv("SECRET_KEY", "")
-if not SECRET_KEY or SECRET_KEY == "":
+if not SECRET_KEY or SECRET_KEY.strip() == "":
     raise ValueError("SECRET_KEY environment variable is not set")
+# type-checker knows SECRET_KEY is str beyond this point
+SECRET_KEY: str = SECRET_KEY
 
-REGISTER_KEY = os.getenv("REGISTER_KEY", "")
-if REGISTER_KEY == "":
-    raise ValueError(
-        "REGISTER_KEY environment variable is not set. Set it to a non-empty value to enable registration."
-    )
+# registration key is optional; leave blank to disable requirement
+REGISTER_KEY = os.getenv("REGISTER_KEY", "")  # type: ignore[assignment]
+if not REGISTER_KEY or REGISTER_KEY.strip() == "":
+    raise ValueError("REGISTER_KEY environment variable is not set")
+
 ALGORITHM = "HS256"
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
-
-
-def verify_register_key(x_key: str | None = Header(None)):
-    """Dependency to check X-KEY header for register requests."""
-    if x_key != REGISTER_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key"
-        )
-    return True
+header_scheme = APIKeyHeader(name="x-api-key")
 
 
 def get_db():
@@ -50,7 +48,7 @@ def get_db():
 async def create_user(
     db: db_dependency,
     create_user_request: CreateUserRequest,
-    _key_ok: bool = Depends(verify_register_key),
+    _key_ok: bool = Depends(header_scheme),
 ):
     """
     Creates a new user with a hashed password and stores it in the database.
