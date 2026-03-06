@@ -6,6 +6,8 @@ services:
     container_name: guts-system
     env_file:
       - .env
+    volumes:
+      - ./app_data:/app/data
     restart: unless-stopped
     networks:
       default:

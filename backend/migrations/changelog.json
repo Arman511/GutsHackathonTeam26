@@ -1,0 +1,16 @@
+{
+    "migrations": [
+        {
+            "id": "001_initial_schema",
+            "description": "Create initial application tables",
+            "sqlite": "001_initial_schema.sqlite.sql",
+            "postgresql": "001_initial_schema.postgresql.sql"
+        },
+        {
+            "id": "002_seed_locations",
+            "description": "Seed LocationInfo rows from output.csv",
+            "sqlite": "002_seed_locations.sqlite.sql",
+            "postgresql": "002_seed_locations.postgresql.sql"
+        }
+    ]
+}

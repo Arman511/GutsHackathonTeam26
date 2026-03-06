@@ -4,31 +4,9 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: guts-system
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=nightout_recommender_db
-      - DB_USER=db_user
-      - DB_PASSWORD=db_pass
+    env_file:
+      - .env
     ports:
       - "8000:8000"
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: db_user
-      POSTGRES_PASSWORD: db_pass
-      POSTGRES_MULTIPLE_DATABASES: nightout_recommender_db,db2
     volumes:
-      - ./init_databases.sh:/docker-entrypoint-initdb.d/init_databases.sh
-      - pgdata:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
-    restart: unless-stopped
-    networks:
-      default:
-        aliases:
-          - postgres
-
-volumes:
-  pgdata:
-    driver: local
+      - ./app_data:/app/data

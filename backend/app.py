@@ -10,8 +10,9 @@ from backend.events import event_router
 from backend.locations import location_router
 from backend.result import result_router
 from backend.keywords import keyword_router
-from backend.database import engine
+from backend.database import URL_DATABASE, engine
 from backend.dependencies import db_dependency as db_dependency
+from backend.sql_migrations import run_sql_migrations
 
 app = FastAPI()
 app.include_router(auth_router, prefix="/api")
@@ -20,7 +21,7 @@ app.include_router(location_router, prefix="/api")
 app.include_router(result_router, prefix="/api")
 app.include_router(keyword_router, prefix="/api")
 
-models.Base.metadata.create_all(bind=engine)
+run_sql_migrations(engine, URL_DATABASE)
 
 user_dependency = Annotated[dict, Depends(get_current_user)]
 

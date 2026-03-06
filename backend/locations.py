@@ -22,7 +22,7 @@ location_router = APIRouter(prefix="/locations", tags=["locations"])
 def build_location_filters(filters: dict):
     """Return (conditions_list, params) for given filter dict.
 
-    - text fields (location, description, address) use ILIKE %%value%%
+    - text fields (location, description, address) use case-insensitive LIKE
     - boolean fields: False means "no preference" (skip); True filters to True
     - open_time: location.open_time <= provided
     - close_time: location.close_time >= provided
@@ -55,7 +55,7 @@ def build_location_filters(filters: dict):
         #     continue
 
         if field in ["location", "description", "address"]:
-            conditions.append(f"{field} ILIKE :{field}")
+            conditions.append(f"LOWER({field}) LIKE LOWER(:{field})")
             params[field] = f"%{value}%"
             continue
 
@@ -72,7 +72,7 @@ def build_location_filters(filters: dict):
             if value is False:
                 # False means no preference: don't filter on this field
                 continue
-            conditions.append(f"{field} IS :{field}")
+            conditions.append(f"{field} = :{field}")
             params[field] = value
             continue
 
