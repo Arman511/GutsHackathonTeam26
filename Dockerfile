@@ -16,7 +16,7 @@ WORKDIR /build/guts-template
 
 RUN npm run build
 
-FROM ghcr.io/astral-sh/uv:python3.11-alpine AS backend-builder
+FROM ghcr.io/astral-sh/uv:python3.14-alpine AS backend-builder
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
@@ -32,6 +32,10 @@ COPY server.py /app
 COPY backend /app/backend
 
 COPY --from=frontend-builder /build/guts-template/dist /app/static
+
+RUN adduser -D appuser
+
+USER appuser
 
 EXPOSE 8000
 
