@@ -23,9 +23,10 @@ elif DB_DIALECT == "sqlite":
     if SQLITE_DB_PATH == ":memory:":
         URL_DATABASE = "sqlite:///:memory:"
     else:
-        sqlite_db_dir = Path(SQLITE_DB_PATH).expanduser().resolve().parent
+        sqlite_db_path = Path(SQLITE_DB_PATH).expanduser().resolve()
+        sqlite_db_dir = sqlite_db_path.parent
         sqlite_db_dir.mkdir(parents=True, exist_ok=True)
-        URL_DATABASE = f"sqlite:///{SQLITE_DB_PATH}"
+        URL_DATABASE = f"sqlite:///{sqlite_db_path}"
 else:
     URL_DATABASE = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
