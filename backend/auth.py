@@ -159,6 +159,7 @@ async def get_me(user: user_dependency):
         raise HTTPException(status_code=401, detail="Authentication Failed")
     return {"User": user}
 
+
 @auth_router.get("/get_user_by_id/{user_id}", status_code=status.HTTP_200_OK)
 async def get_user_by_id(user_id: int, db: db_dependency):
     """

@@ -1,52 +1,64 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DomeGallery from "./react-bits/DomeGallery";
-import { setAccessToken } from "../main";
-import { login } from "../api/api";
+import DomeGallery from './react-bits/DomeGallery';
+import { setAccessToken } from '../main';
+import { login } from '../api/api';
 import './Login.css';
 
 export default function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await login({ username: username, password });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await login({ username: username, password });
 
-            if (response?.access_token) {
-                setAccessToken(response.access_token);
-                localStorage.setItem("access_token", response.access_token);
-                navigate("/home");
-            } else {
-                alert("Invalid username or password");
-            }
-        } catch (error) {
-            console.error("Login failed:", error);
-            setError(`Login failed: ${error.message}`);
-        }
-    };
-
-    const handleSkip = () => {
+      if (response?.access_token) {
+        setAccessToken(response.access_token);
+        localStorage.setItem('access_token', response.access_token);
         navigate('/home');
-    };
+      } else {
+        alert('Invalid username or password');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      setError(`Login failed: ${error.message}`);
+    }
+  };
 
-    return (
-        <div className="login-page">
-            <DomeGallery />
+  const handleSkip = () => {
+    navigate('/home');
+  };
 
-            <div className="login-box">
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} required />
-                    <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required />
-                    <button type="submit">Login</button>
-                </form>
-                <br />
-                {error && <p className="error-message">{error}</p>}
-            </div>
-        </div>
-    );
+  return (
+    <div className='login-page'>
+      <DomeGallery />
+
+      <div className='login-box'>
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type='text'
+            placeholder='Username'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+          <input
+            type='password'
+            placeholder='Password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type='submit'>Login</button>
+        </form>
+        <br />
+        {error && <p className='error-message'>{error}</p>}
+      </div>
+    </div>
+  );
 }

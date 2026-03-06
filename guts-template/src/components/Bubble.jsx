@@ -1,13 +1,12 @@
-
-import React from "react";
+import React from 'react';
 import BackgroundWrapper from './react-bits/BackgroundWrapper';
 
 function Bubble({ name, onRemove }) {
-    return (
-        <span className="bubble" onClick={() => onRemove(name)}>
-            {name} ✕
-        </span>
-    );
+  return (
+    <span className='bubble' onClick={() => onRemove(name)}>
+      {name} ✕
+    </span>
+  );
 }
 
-export default Bubble
+export default Bubble;

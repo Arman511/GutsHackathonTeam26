@@ -18,5 +18,5 @@ localserve:
 format:
 	@echo "[make] formatting with prettier & black"
 	# prettier configuration lives in the frontend package.json/vite setup
-	npx prettier --write "./guts-template/src/**/*.jsx" "./guts-template/src/**/*.js" "./guts-template/**/*.js" || true
+	npx prettier . --write  || true
 	black .

@@ -1,140 +1,142 @@
-html, body, #root {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden;
 }
 
 .agenda-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 .agenda-container h1 {
-    color: white;
-    text-align: center;
-    margin-bottom: 15px;
+  color: white;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 .home-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: 1px solid #0088cc;
-    background-color: white;
-    color: black;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    text-align: center;
-    margin-bottom: 15px;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid #0088cc;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: center;
+  margin-bottom: 15px;
 }
 
 .home-btn:hover {
-    background-color: #007bff;
-    color: white;
+  background-color: #007bff;
+  color: white;
 }
 
 .filters {
-    margin: 10px 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
+  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .filter-button {
-    padding: 8px 15px;
-    border: 1px solid #e7e2e2;
-    border-radius: 12px;
-    cursor: pointer;
-    background-color: #ffffff;
-    transition: all 0.2s;
+  padding: 8px 15px;
+  border: 1px solid #e7e2e2;
+  border-radius: 12px;
+  cursor: pointer;
+  background-color: #ffffff;
+  transition: all 0.2s;
 }
 
 .filter-button.selected {
-    background-color: #007bff;
-    color: white;
-    border-color: #007bff;
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
 }
 
 .events-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
 }
 
 .event-card {
-    display: flex;
-    flex-direction: row;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    transition: all 0.2s;
-    overflow: hidden;
-    background-color: #fff;
-    padding: 10px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  transition: all 0.2s;
+  overflow: hidden;
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .event-card:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .event-image {
-    flex: 0 0 175px;
-    height: 175px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    border-radius: 2px;
+  flex: 0 0 175px;
+  height: 175px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  border-radius: 2px;
 }
 
 .event-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .event-details {
-    flex: 1;
-    padding: 5px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 5px;
+  flex: 1;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5px;
 }
 
 .event-info h3 {
-    margin: 0 0 5px 0;
+  margin: 0 0 5px 0;
 }
 
 .event-more button {
-    margin-top: 5px;
-    border-color: #0063d3;
-    color: black;
-    border-radius: 5px;
-    padding: 6px 12px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  margin-top: 5px;
+  border-color: #0063d3;
+  color: black;
+  border-radius: 5px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .event-more button:hover {
-    color: white;
-    background-color: #0063d3;
+  color: white;
+  background-color: #0063d3;
 }
 
 .event-extra {
-    margin-top: 10px;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    max-height: 0;
+  margin-top: 10px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  max-height: 0;
 }
 
 .event-card.expanded .event-extra {
-    max-height: 500px;
+  max-height: 500px;
 }
