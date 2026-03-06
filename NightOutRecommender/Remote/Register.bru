@@ -7,14 +7,20 @@ meta {
 post {
   url: https://nos.armandev.co.uk/api/auth/register
   body: json
-  auth: inherit
+  auth: apikey
+}
+
+auth:apikey {
+  key: x-api-key
+  value: {{nos_api_key}}
+  placement: header
 }
 
 body:json {
   {
-    "name": "jeff",
-    "username": "jeff",
-    "password": "luke"
+    "name": "Himani",
+    "username": "Himani",
+    "password": "{{himani_pass}}"
   }
 }
 

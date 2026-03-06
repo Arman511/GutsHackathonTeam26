@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import os
 from typing import Annotated
 import bcrypt
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import ExpiredSignatureError, JWTError, jwt
 from pydantic import BaseModel
@@ -15,12 +15,27 @@ from backend.dependencies import db_dependency
 from backend.models import CreateUserRequest, Token, Users
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
-SECRET_KEY = os.getenv(
-    "SECRET_KEY", "0a2bc0e6d35762554bcad140ecd1cec7c2a9fb1b5252da1d2c0b4e10e6c20f6f"
-)
+SECRET_KEY = os.getenv("SECRET_KEY", "")
+if not SECRET_KEY or SECRET_KEY == "":
+    raise ValueError("SECRET_KEY environment variable is not set")
+
+REGISTER_KEY = os.getenv("REGISTER_KEY", "")
+if REGISTER_KEY == "":
+    raise ValueError(
+        "REGISTER_KEY environment variable is not set. Set it to a non-empty value to enable registration."
+    )
 ALGORITHM = "HS256"
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/auth/token")
+
+
+def verify_register_key(x_key: str | None = Header(None)):
+    """Dependency to check X-KEY header for register requests."""
+    if x_key != REGISTER_KEY:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key"
+        )
+    return True
 
 
 def get_db():
@@ -32,7 +47,11 @@ def get_db():
 
 
 @auth_router.post("/register", status_code=status.HTTP_201_CREATED)
-async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+async def create_user(
+    db: db_dependency,
+    create_user_request: CreateUserRequest,
+    _key_ok: bool = Depends(verify_register_key),
+):
     """
     Creates a new user with a hashed password and stores it in the database.
     """

@@ -7,7 +7,13 @@ meta {
 post {
   url: http://localhost:8000/api/auth/register
   body: json
-  auth: inherit
+  auth: apikey
+}
+
+auth:apikey {
+  key: x-api-key
+  value: {{nos_api_key}}
+  placement: header
 }
 
 body:json {
