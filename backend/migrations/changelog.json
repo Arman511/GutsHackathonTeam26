@@ -23,6 +23,18 @@
       "description": "Insert 100 random fake LocationInfo rows reusing existing image URLs",
       "sqlite": "004_add_fake_locations.sqlite.sql",
       "postgresql": "004_add_fake_locations.postgresql.sql"
+    },
+    {
+      "id": "005_add_more_fake_locations",
+      "description": "Insert 1000 minimal-detail fake LocationInfo rows with google_rating 1-5 and biased price distribution",
+      "sqlite": "005_add_more_fake_locations.sqlite.sql",
+      "postgresql": "005_add_more_fake_locations.postgresql.sql"
+    },
+    {
+      "id": "006_remove_random_fake_locations",
+      "description": "Delete roughly 75% of locations with 'Fake' in the name",
+      "sqlite": "006_remove_random_fake_locations.sqlite.sql",
+      "postgresql": "006_remove_random_fake_locations.postgresql.sql"
     }
   ]
 }
