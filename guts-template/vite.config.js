@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://nos.armandev.co.uk',
+        target: 'http://localhost:8000',
         changeOrigin: true,
       },
     },

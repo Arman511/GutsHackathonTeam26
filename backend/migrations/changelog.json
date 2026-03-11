@@ -11,6 +11,18 @@
       "description": "Seed LocationInfo rows from output.csv",
       "sqlite": "002_seed_locations.sqlite.sql",
       "postgresql": "002_seed_locations.postgresql.sql"
+    },
+    {
+      "id": "003_price_range_enum",
+      "description": "Convert LocationInfo.price_range to enum ('£','££','£££') and update existing values",
+      "sqlite": "003_price_range_enum.sqlite.sql",
+      "postgresql": "003_price_range_enum.postgresql.sql"
+    },
+    {
+      "id": "004_add_fake_locations",
+      "description": "Insert 100 random fake LocationInfo rows reusing existing image URLs",
+      "sqlite": "004_add_fake_locations.sqlite.sql",
+      "postgresql": "004_add_fake_locations.postgresql.sql"
     }
   ]
 }
